@@ -1,0 +1,59 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use utf8;
+use Encode;
+
+use Term::ANSIColor qw(:constants);
+use File::Which qw(which);
+
+my $dict_path = $ENV{DICT_PATH} || '/home/syohei/local/dict/eijiro127.sdic';
+unless (-e $dict_path) {
+    die "Dictionary file $dict_path is not existed";
+}
+
+unless (which('sary')) {
+    die "Please install sary";
+}
+
+my $search_word = shift or die "$0 search_word";
+
+my @cmd = qq{sary '>${search_word}<' $dict_path};
+
+open my $pid, '-|', @cmd or die "Can't open process @cmd";
+my $output = do {
+    local $/;
+    decode_utf8(<$pid>);
+};
+close $pid;
+
+my $colored  = BOLD . GREEN . UNDERSCORE;
+my $reset = RESET;
+
+my $formatted = format_output($output);
+
+print encode_utf8($formatted);
+
+sub format_output {
+    my $output = shift;
+
+    $output =~ s{&lf;}{\n}g;
+    $output =~ s{<K>}{$colored}g;
+    $output =~ s{</K>}{$reset\n  }g;
+
+    my $paren = "【";
+    $output =~ s{($paren)}{\n    $1}g;
+
+    open my $fh, "<", \$output or die "Can't open output as file";
+
+    my @lines;
+    while (my $line = <$fh>) {
+        unless ($line =~ m{^\s*$}) {
+            push @lines, decode_utf8($line);
+        }
+    }
+    close $fh;
+
+    return join '', @lines;
+}
