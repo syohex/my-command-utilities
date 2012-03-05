@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for file in *.sh *.pl
+for file in *
 do
     if [ $file != "setup.sh" ]
     then
