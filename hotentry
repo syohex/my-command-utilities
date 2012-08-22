@@ -101,14 +101,12 @@ sub _parse_rss {
 
 sub _entry_url {
     my $self = shift;
-    my $tmpl = 'http://b.hatena.ne.jp/t/#KEY#?sort=hot&threshold=#THRESHOLD#&mode=rss';
 
     my ($key, $threshold) = ($self->key, $self->threshold);
     $key = uri_escape_utf8($key);
-    $tmpl =~ s{#KEY#}{$key};
-    $tmpl =~ s{#THRESHOLD#}{$threshold};
 
-    $tmpl;
+    my $fmt = 'http://b.hatena.ne.jp/search/tag?q=%s&users=%d&mode=rss';
+    sprintf $fmt, $key, $threshold;
 }
 
 sub _get_content_ref {
