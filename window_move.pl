@@ -85,26 +85,22 @@ sub zoom_window {
     my $window_info = shift;
 
     my $panel_height = 0;
+    my $bar_height = 0;
     if ($ENV{DESKTOP_SESSION} ne 'gnome') {
         $panel_height = get_panel_height();
+        $bar_height = 21;
     }
 
     my @cmd = ('wmctrl', '-i', '-r', $window_info->{id}, '-e');
 
     my $fix_size = 50;
     my $zoom_parameter;
-    if ($option eq 'j' || $option eq 'k') {
-        my $size = $option eq 'j' ? -$fix_size : $fix_size;
-        my $h = $window_info->{height} + $size;
-        $zoom_parameter = "0,-1,-1,-1,$h";
-    } elsif ($option eq 'h' || $option eq 'l') {
-        my $size = $option eq 'h' ? -$fix_size : $fix_size;
-        my $w = $window_info->{width} + $size;
-        $zoom_parameter = "0,-1,-1,$w,-1";
-    } elsif ($option eq 'max_height') {
-        $zoom_parameter = "0,-1,$panel_height,-1,$desktop_height";
-    } elsif ($option eq 'max_width') {
-        $zoom_parameter = "0,-1,$panel_height,$desktop_width,-1";
+    my $w = int($desktop_width / 2);
+    my $h = $desktop_height - $panel_height - $bar_height;
+    if ($option eq 'right_max') {
+        $zoom_parameter = "0,$w,$panel_height,$w,$h";
+    } elsif ($option eq 'left_max') {
+        $zoom_parameter = "0,0,$panel_height,$w,$h";
     } else {
         die "Unknown option '$option'";
     }
