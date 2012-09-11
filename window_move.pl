@@ -97,10 +97,9 @@ sub zoom_window {
     my $zoom_parameter;
     my $w = int($desktop_width / 2);
     my $h = $desktop_height - $panel_height - $bar_height;
-    if ($option eq 'right_max') {
-        $zoom_parameter = "0,$w,$panel_height,$w,$h";
-    } elsif ($option eq 'left_max') {
-        $zoom_parameter = "0,0,$panel_height,$w,$h";
+    if ($option eq 'half_max') {
+        my $x_pos = $window_info->{x_pos} > $w ? $w : 0;
+        $zoom_parameter = "0,$x_pos,$panel_height,$w,$h";
     } else {
         die "Unknown option '$option'";
     }
@@ -146,7 +145,12 @@ sub get_window_info {
             $window_info->{width} = $1;
         } elsif ($line =~ m{Height:\s+(\d+)}) {
             $window_info->{height} = $1;
+        } elsif ($line =~ m{Absolute upper-left X:\s+(\d+)}) {
+            $window_info->{x_pos} = $1;
+        } elsif ($line =~ m{Absolute upper-left Y:\s+(\d+)}) {
+            $window_info->{y_pos} = $1;
         }
+
     }
     close $fh;
 
