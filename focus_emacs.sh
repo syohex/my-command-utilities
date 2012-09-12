@@ -1,10 +1,10 @@
 #!/bin/sh
 
-EMACS_PID=`ps ux | grep --color=none 'emacs --reverse$' | awk '{ print $2 }'`
+EMACS_PID=`ps ux | grep --color=none 'emacs$' | awk '{ print $2 }'`
 
 if [ "$EMACS_PID" = "" ]
 then
-    exec emacs --reverse
+    exec emacs
 fi
 
 EMACS_WID=`wmctrl -p -l | perl -awln -e "print \\$F[0] if \\$F[2] == $EMACS_PID"`
