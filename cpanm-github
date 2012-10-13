@@ -1,0 +1,12 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use 5.010;
+
+my $arg = shift or die "Usage: $0 user/project";
+my ($user, $proj, $branch) = split '/', $arg, 3;
+$branch //= 'master';
+
+my @cmd = ('cpanm', "https://github.com/$user/$proj/tarball/$branch");
+exec @cmd or die "Cannot exec cpanm: $!";
