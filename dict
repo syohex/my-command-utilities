@@ -39,8 +39,11 @@ sub format_output {
     my $output = shift;
 
     $output =~ s{&lf;}{\n}g;
-    $output =~ s{<K>}{$colored}g;
-    $output =~ s{</K>}{$reset\n  }g;
+
+    if (-t STDOUT) {
+        $output =~ s{<K>}{$colored}g;
+        $output =~ s{</K>}{$reset\n  }g;
+    }
 
     my $paren = "【";
     $output =~ s{($paren)}{\n    $1}g;
