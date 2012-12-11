@@ -45,6 +45,8 @@ sub format_output {
     my $output = shift;
 
     $output =~ s{&lf;}{\n}g;
+    $output =~ s{&lt;}{<}g;
+    $output =~ s{&gt;}{>}g;
 
     $output =~ s{<K>}{$colored}g;
     $output =~ s{</K>}{$reset\n  }g;
