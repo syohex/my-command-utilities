@@ -28,8 +28,14 @@ my $output = do {
 };
 close $pid;
 
-my $colored  = BOLD . GREEN . UNDERSCORE;
-my $reset = RESET;
+my ($colored, $reset);
+if (-t STDOUT) {
+    $colored  = BOLD . GREEN . UNDERSCORE;
+    $reset = RESET;
+} else {
+    $colored = '';
+    $reset = '';
+}
 
 my $formatted = format_output($output);
 
@@ -40,10 +46,8 @@ sub format_output {
 
     $output =~ s{&lf;}{\n}g;
 
-    if (-t STDOUT) {
-        $output =~ s{<K>}{$colored}g;
-        $output =~ s{</K>}{$reset\n  }g;
-    }
+    $output =~ s{<K>}{$colored}g;
+    $output =~ s{</K>}{$reset\n  }g;
 
     my $paren = "【";
     $output =~ s{($paren)}{\n    $1}g;
