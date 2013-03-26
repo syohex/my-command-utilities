@@ -2,20 +2,17 @@
 # -*- mode:shell-script -*-
 
 set -e
-set -x
 
-if ! which curl > /dev/null 2>&1
-then
+if ! which curl > /dev/null 2>&1 ; then
     echo "Please install curl"
     exit
 fi
 
-if [ -f $HOME/perl5/perlbrew/bin/cpanm ]
-then
+if [ -f $HOME/perl5/perlbrew/bin/cpanm ]; then
     echo "Remove perlbrew's cpanm"
     rm -f $HOME/perl5/perlbrew/bin/cpanm
 fi
 
-VERSION=`perl -MConfig -e 'print $Config{version}'`
+VERSION=$(perl -MConfig -e 'print $Config{version}')
 echo "Install cpanm for perl-${VERSION}"
 curl -L http://cpanmin.us | perl - App::cpanminus
