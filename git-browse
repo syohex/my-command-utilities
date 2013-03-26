@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+REMOTE=$(git remote -v | grep -m 1 origin \
+    | perl -awln -e '$F[1] =~ m{github.com[:/]?(\S+)?\.git} and print $1')
+
+if [ "$OSTYPE" = "linux-gnu" ]; then
+    xdg-open "https://github.com/$REMOTE"
+fi
