@@ -6,7 +6,7 @@ url=""
 
 if [ "$1" = "" ]; then
     REMOTE=$(git remote -v | grep -m 1 origin \
-        | perl -awln -e '$F[1] =~ m{github.com[:/]?(\S+)?\.git} and print $1')
+        | perl -awln -e '$F[1] =~ m{github.com[:/]?(\S+?)?(?:\.git)?$} and print $1')
 
     branch=$(git symbolic-ref HEAD| perl -wpe 's{refs/heads/}{}')
     if [ branch = "master" ];then
