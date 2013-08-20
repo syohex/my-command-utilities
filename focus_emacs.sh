@@ -10,4 +10,3 @@ fi
 
 EMACS_WID=`wmctrl -p -l | perl -awln -e "print \\$F[0] if \\$F[2] == $EMACS_PID"`
 wmctrl -i -a $EMACS_WID
-
