@@ -18,8 +18,8 @@ else
     url="https://github.com/$1"
 fi
 
-OS=$(uname -o)
-if [ "$OS" = "GNU/Linux" ]; then
+OS=$(uname)
+if [ "$OS" = "Linux" ]; then
     xdg-open $url >/dev/null 2>&1
 else
     open $url
