@@ -9,7 +9,7 @@ if [ "$1" = "" ]; then
         | perl -awln -e '$F[1] =~ m{github.com[:/]?(\S+?)?(?:\.git)?$} and print $1')
 
     branch=$(git symbolic-ref HEAD| perl -wpe 's{refs/heads/}{}')
-    if [ branch = "master" ];then
+    if [ $branch = "master" ];then
         url="https://github.com/$REMOTE"
     else
         url="https://github.com/$REMOTE/tree/${branch}"
