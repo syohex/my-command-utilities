@@ -24,7 +24,7 @@ my @cmd = qq{sary '>${search_word}<' $dict_path};
 open my $pid, '-|', @cmd or die "Can't open process @cmd";
 my $output = do {
     local $/;
-    decode_utf8(<$pid>);
+    <$pid>;
 };
 close $pid;
 
