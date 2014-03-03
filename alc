@@ -9,6 +9,8 @@ if [ "$QUERY" = "" ]; then
 fi
 
 url=$(printf 'http://eow.alc.co.jp/search?q=%s&ref=sa' $QUERY)
+
+OS=$(uname)
 if [ "$OS" = "Linux" ]; then
     xdg-open $url > /dev/null 2>&1
 else
