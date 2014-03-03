@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+QUERY=$1
+if [ "$QUERY" = "" ]; then
+    echo "Usage: alc query"
+    exit 1
+fi
+
+url=$(printf 'http://eow.alc.co.jp/search?q=%s&ref=sa' $QUERY)
+if [ "$OS" = "Linux" ]; then
+    xdg-open $url > /dev/null 2>&1
+else
+    open $url
+fi
