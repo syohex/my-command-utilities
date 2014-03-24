@@ -1,0 +1,24 @@
+#!/usr/bin/env zsh
+set -e
+
+ELPA_DIR=.cask/$(emacs -Q --batch --eval '(princ emacs-version)')/elpa
+
+EMACS=""
+case "$OSTYPE" in
+darwin*)
+    EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
+    ;;
+linux-gnu)
+    EMACS=emacs
+    ;;
+esac
+
+TEST_CONFIG=${HOME}/dot_files/emacs/test_emacs
+
+if [ -d "${ELPA_DIR}" ]; then
+    echo "cask exec $EMACS -Q -l $TEST_CONFIG"
+    cask exec $EMACS -Q -l $TEST_CONFIG $@
+else
+    echo "$EMACS -Q -l $TEST_CONFIG"
+    $EMACS -Q -l $TEST_CONFIG $@
+fi
