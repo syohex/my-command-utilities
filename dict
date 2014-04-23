@@ -28,14 +28,8 @@ my $output = do {
 };
 close $pid;
 
-my ($colored, $reset);
-if (-t STDOUT) {
-    $colored  = BOLD . GREEN . UNDERSCORE;
-    $reset = RESET;
-} else {
-    $colored = '';
-    $reset = '';
-}
+my $colored  = BOLD . GREEN . UNDERSCORE;
+my $reset = RESET;
 
 my $formatted = format_output($output);
 
