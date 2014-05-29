@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 set -e
 
-EMACS="$EMACS"
+EMACS="${EMACS:-emacs}"
 
 case "$OSTYPE" in
 darwin*)
