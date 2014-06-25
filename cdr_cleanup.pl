@@ -10,6 +10,7 @@ open my $fh, '<', $file or die "Can't open file $!";
 my $not_registered_regexp = qr{/\.(?:cask|ghq)(?:/|$)};
 
 my @lives;
+my $deleted = 0;
 while (my $line = <$fh>) {
     chomp $line;
 
@@ -17,7 +18,7 @@ while (my $line = <$fh>) {
         my $dir = $1;
 
         unless (-d $dir) {
-            print "$dir is no longer existed\n";
+            $deleted++;
             next;
         }
 
@@ -35,3 +36,5 @@ open my $wfh, '>', $file or die "Can't open file $!";
 print {$wfh} join("\n", @lives);
 print {$wfh} "\n";
 close $wfh;
+
+print "Delete $deleted directories\n";
