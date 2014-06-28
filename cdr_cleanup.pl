@@ -23,7 +23,7 @@ while (my $line = <$fh>) {
         }
 
         if ($dir =~ $not_registered_regexp) {
-            print "$dir is not registered\n";
+            $deleted++;
             next;
         }
 
