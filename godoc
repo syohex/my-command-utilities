@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+
+set -e
+
+local -a go_packages
+
+go_packages=("builtin")
+for dir in $GOROOT $(perl -wle 'print $_ for split q{:}, shift' $GOPATH)
+do
+    pkgdir="$dir/pkg"
+    if [ -d $pkgdir ]; then
+        packages=$(find $pkgdir -name "*.a" -type f \
+                          | perl -wlp -e "s{$pkgdir/(?:(?:obj|tool)/)?[^/]+/}{} and s{\\.a\$}{}")
+        go_packages=($packages $go_packages)
+    fi
+done
+
+$GOROOT/bin/godoc $(echo $go_packages | sort | uniq | peco) | $PAGER
