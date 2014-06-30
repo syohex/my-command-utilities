@@ -17,7 +17,7 @@ unless (which('sary')) {
     die "Please install sary";
 }
 
-my $search_word = shift or die "$0 search_word";
+my $search_word = shift or die "Usage: dict search_word";
 
 my @cmd = qq{sary '>${search_word}<' $dict_path};
 
