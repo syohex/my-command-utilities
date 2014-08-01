@@ -7,7 +7,7 @@ use File::Spec;
 my $file = File::Spec->catfile($ENV{HOME}, ".chpwd-recent-dirs");
 open my $fh, '<', $file or die "Can't open file $!";
 
-my $not_registered_regexp = qr{/\.(?:cask|ghq)(?:/|$)};
+my $not_registered_regexp = qr{/\.(?:cask|ghq|git|hg)(?:/|$)};
 
 my @lives;
 my $deleted = 0;
