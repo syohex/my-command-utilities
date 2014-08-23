@@ -8,7 +8,16 @@ use Encode;
 use Term::ANSIColor qw(:constants);
 use File::Which qw(which);
 
-my $dict_path = $ENV{DICT_PATH} || '/home/syohei/local/dict/eijiro127.sdic';
+my $search_word = shift or die "Usage: dict search_word";
+$search_word = Encode::decode_utf8($search_word);
+
+my $dict_path;
+if ($search_word =~ m{\A[a-z_\- ]+}i) {
+    $dict_path = '/home/syohei/local/dict/eijiro127.sdic';
+    $search_word = "'>${search_word}<'";
+} else {
+    $dict_path = '/home/syohei/local/dict/waeiji127.sdic';
+}
 unless (-e $dict_path) {
     die "Dictionary file $dict_path is not existed";
 }
@@ -17,9 +26,8 @@ unless (which('sary')) {
     die "Please install sary";
 }
 
-my $search_word = shift or die "Usage: dict search_word";
 
-my @cmd = qq{sary '>${search_word}<' $dict_path};
+my @cmd = qq{sary $search_word $dict_path};
 
 open my $pid, '-|', @cmd or die "Can't open process @cmd";
 my $output = do {
@@ -44,6 +52,9 @@ sub format_output {
 
     $output =~ s{<K>}{$colored}g;
     $output =~ s{</K>}{$reset\n  }g;
+
+    $output =~ s{<H>}{\n}g;
+    $output =~ s{</H>}{\n}g;
 
     my $paren = "【";
     $output =~ s{($paren)}{\n    $1}g;
