@@ -9,12 +9,20 @@ use Term::ANSIColor qw(:constants);
 use File::Which qw(which);
 
 my $search_word = shift or die "Usage: dict search_word";
+my $statement_flag = 0;
+if ($search_word eq '-s') {
+    $search_word = shift;
+    $statement_flag = 1;
+}
+
 $search_word = Encode::decode_utf8($search_word);
 
 my $dict_path;
 if ($search_word =~ m{\A[a-z_\- ]+}i) {
     $dict_path = '/home/syohei/local/dict/eijiro127.sdic';
-    $search_word = "'>${search_word}<'";
+    unless ($statement_flag) {
+        $search_word = "'>${search_word}<'";
+    }
 } else {
     $dict_path = '/home/syohei/local/dict/waeiji127.sdic';
 }
@@ -26,13 +34,12 @@ unless (which('sary')) {
     die "Please install sary";
 }
 
-
 my @cmd = qq{sary $search_word $dict_path};
 
 open my $pid, '-|', @cmd or die "Can't open process @cmd";
 my $output = do {
     local $/;
-    <$pid>;
+    Encode::decode_utf8(<$pid>);
 };
 close $pid;
 
@@ -55,10 +62,14 @@ sub format_output {
 
     $output =~ s{<H>}{\n}g;
     $output =~ s{</H>}{\n}g;
-
+    $output =~ s{→}{ => }g;
+    $output =~ s{◆}{@ }g;
+    $output =~ s{■}{ }g;
+    $output =~ s{●}{o }g;
     my $paren = "【";
     $output =~ s{($paren)}{\n    $1}g;
 
+    $output = Encode::encode_utf8($output);
     open my $fh, "<", \$output or die "Can't open output as file";
 
     my @lines;
