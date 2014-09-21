@@ -28,7 +28,7 @@ while (my $line = <$fh>) {
             next;
         }
 
-        my $abs = glob($dir);
+        my ($abs) = glob($dir);
         if (exists $registered{$abs}) {
             $deleted++;
             next;
