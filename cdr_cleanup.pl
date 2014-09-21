@@ -3,7 +3,6 @@ use strict;
 use warnings;
 
 use File::Spec;
-use File::Path::Expand;
 
 my $file = File::Spec->catfile($ENV{HOME}, ".chpwd-recent-dirs");
 open my $fh, '<', $file or die "Can't open file $!";
@@ -29,7 +28,7 @@ while (my $line = <$fh>) {
             next;
         }
 
-        my $abs = expand_filename($dir);
+        my $abs = glob($dir);
         if (exists $registered{$abs}) {
             $deleted++;
             next;
