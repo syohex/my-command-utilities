@@ -4,18 +4,19 @@ set -e
 
 url=""
 
-if [ "$1" = "" ]; then
-    REMOTE=$(git remote -v | grep -m 1 origin \
-        | perl -awln -e '$F[1] =~ m{github.com[:/]?(\S+?)?(?:\.git)?$} and print $1')
+REMOTE=$1
+if [ "$REMOTE" = "" ]; then
+    REMOTE=origin
+fi
 
-    branch=$(git symbolic-ref HEAD| perl -wpe 's{refs/heads/}{}')
-    if [ $branch = "master" ];then
-        url="https://github.com/$REMOTE"
-    else
-        url="https://github.com/$REMOTE/tree/${branch}"
-    fi
+URL_PATH=$(git remote -v | grep -m 1 $REMOTE \
+       | perl -awln -e '$F[1] =~ m{github.com[:/]?(\S+?)?(?:\.git)?$} and print $1')
+
+branch=$(git symbolic-ref HEAD| perl -wpe 's{refs/heads/}{}')
+if [ $branch = "master" ];then
+    url="https://github.com/$URL_PATH"
 else
-    url="https://github.com/$1"
+    url="https://github.com/$URL_PATH/tree/${branch}"
 fi
 
 OS=$(uname)
