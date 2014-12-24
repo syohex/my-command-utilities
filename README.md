@@ -34,8 +34,6 @@ Open github page of current repository.
 
 My minimal Emacs configuration for testing package.
 
-## `url_title.rb`
-
 ## window_move.pl
 
 Move window position
