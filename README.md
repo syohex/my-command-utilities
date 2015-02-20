@@ -22,10 +22,6 @@ Focus specific application window
 - Launch Firefox if Firefox does not run yet.
 - Focus Firefox window if Firefox is already running.
 
-## `git-browse`
-
-Open github page of current repository.
-
 ## `godocp`
 
 `godoc` + `peco`
