@@ -15,4 +15,7 @@ do
     fi
 done
 
-$GOROOT/bin/godoc $(echo $go_packages | sort | uniq | peco) | $PAGER
+PACKAGE=$(echo $go_packages | sort | uniq | peco)
+if [ "$PACKAGE" != "" ];then
+    $GOROOT/bin/godoc $PACKAGE | $PAGER
+fi
