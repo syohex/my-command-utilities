@@ -7,7 +7,7 @@ use File::Spec;
 my $file = File::Spec->catfile($ENV{HOME}, ".chpwd-recent-dirs");
 open my $fh, '<', $file or die "Can't open file $!";
 
-my $not_registered_regexp = qr{/\.(?:cask|ghq|git|hg|vim)(?:/|$)};
+my $not_registered_regexp = qr{/\.(?:cask|ghq|git|hg|vim|emacs\.d)(?:/|$)};
 
 my @lives;
 my %registered;
@@ -23,7 +23,7 @@ while (my $line = <$fh>) {
             next;
         }
 
-        if ($dir =~ $not_registered_regexp) {
+        if ($dir =~ $not_registered_regexp || $dir eq $ENV{HOME}) {
             $deleted++;
             next;
         }
