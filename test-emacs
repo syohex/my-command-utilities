@@ -13,7 +13,7 @@ ELPA_DIR=.cask/$($EMACS -Q --batch --eval '(princ emacs-version)')/elpa
 
 TEST_CONFIG=${HOME}/dot_files/emacs/test_emacs
 
-if [ -d "${ELPA_DIR}" ]; then
+if [ -e "Cask" -a -d "${ELPA_DIR}" ]; then
     cask exec $EMACS -Q -l $TEST_CONFIG $@
 else
     $EMACS -Q -l $TEST_CONFIG $@
