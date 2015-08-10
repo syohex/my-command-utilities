@@ -1,0 +1,23 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "" ]; then
+    echo "Usage: weblio 'word' or 'sentense'"
+    exit
+fi
+
+query="$1"
+shift
+for arg in $@
+do
+    query="${query}+${arg}"
+done
+
+url="http://ejje.weblio.jp/sentence/content/${query}"
+
+OS=$(uname)
+if [ "$OS" = "Linux"]; then
+    xdg-open $url
+else
+    open $url
+fi
