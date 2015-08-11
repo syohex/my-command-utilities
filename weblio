@@ -16,7 +16,7 @@ done
 url="http://ejje.weblio.jp/sentence/content/${query}"
 
 OS=$(uname)
-if [ "$OS" = "Linux"]; then
+if [ "$OS" = "Linux" ]; then
     xdg-open $url
 else
     open $url
