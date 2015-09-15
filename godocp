@@ -2,9 +2,8 @@
 
 set -e
 
-local -a go_packages
+go_packages=("builtin" "unsafe")
 
-go_packages=("builtin")
 for dir in $GOROOT $(perl -wle 'print $_ for split q{:}, shift' $GOPATH)
 do
     pkgdir="$dir/pkg"
@@ -15,7 +14,7 @@ do
     fi
 done
 
-PACKAGE=$(echo $go_packages | sort | uniq | peco)
+PACKAGE=$(print -l $go_packages | sort | uniq | peco)
 if [ "$PACKAGE" != "" ];then
     $GOROOT/bin/godoc $PACKAGE | $PAGER
 fi
