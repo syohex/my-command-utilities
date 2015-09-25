@@ -1,13 +1,12 @@
-#!/usr/bin/env zsh
+#!/bin/sh
 set -e
 
 EMACS="${EMACS:-emacs}"
 
-case "$OSTYPE" in
-darwin*)
+SYSTEM=$(uname -s)
+if [ "$SYSTEM" = "Darwin" ]; then
     EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
-    ;;
-esac
+fi
 
 ELPA_DIR=.cask/$($EMACS -Q --batch --eval '(princ emacs-version)')/elpa
 
