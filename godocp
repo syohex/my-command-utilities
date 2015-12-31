@@ -16,5 +16,9 @@ done
 
 PACKAGE=$(print -l $go_packages | grep -v Godeps | sort | uniq | peco)
 if [ "$PACKAGE" != "" ];then
-    $GOROOT/bin/godoc $PACKAGE | $PAGER
+    if [ -z "$GOROOT" ]; then
+        godoc $PACKAGE | $PAGER
+    else
+        $GOROOT/bin/godoc $PACKAGE | $PAGER
+    fi
 fi
