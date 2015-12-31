@@ -14,7 +14,7 @@ do
     fi
 done
 
-PACKAGE=$(print -l $go_packages | sort | uniq | peco)
+PACKAGE=$(print -l $go_packages | grep -v Godeps | sort | uniq | peco)
 if [ "$PACKAGE" != "" ];then
     $GOROOT/bin/godoc $PACKAGE | $PAGER
 fi
