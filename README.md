@@ -1,16 +1,8 @@
 # My Command Utilities
 
-## `alc word`
-
-open `http://www.alc.co.jp/` for searching **word**
-
 ## `cdr_cleanup.pl`
 
 Clean up zsh cdr directories which no longer exists.
-
-## `focus_app.sh`
-
-Focus specific application window
 
 ## `focus_emacs.sh`
 
