@@ -14,6 +14,10 @@ Clean up zsh cdr directories which no longer exists.
 - Launch Firefox if Firefox does not run yet.
 - Focus Firefox window if Firefox is already running.
 
+## `gencask`
+
+Generate Cask file
+
 ## `godocp`
 
 `godoc` + `peco`

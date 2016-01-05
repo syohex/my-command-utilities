@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+
+FILE=$1
+if [ "$FILE" = "" ]; then
+    echo "Usage: gencask filename"
+    exit 1
+fi
+
+if [ ! -e $FILE ]; then
+    echo "'$FILE' is not existed"
+    exit 1
+fi
+
+echo "(source gnu)" > Cask
+echo "(source melpa)" >> Cask
+echo "(package-file" '"'$FILE'"'")" >> Cask
