@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+BASE='https://www.gitignore.io'
+
+TYPE=$1
+if [ "$TYPE" = "" ]; then
+    TYPE=$(curl -s -L "https://www.gitignore.io/api/list" | perl -wln -e 'print for split ",", $_'|peco)
+fi
+
+curl -s -L "https://www.gitignore.io/api/$TYPE"
