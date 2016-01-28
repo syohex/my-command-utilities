@@ -13,11 +13,11 @@ do
     query="${query}+${arg}"
 done
 
-url="http://ejje.weblio.jp/sentence/content/${query}"
+url="http://ejje.weblio.jp/sentence/content/\"${query}\""
 
 OS=$(uname)
 if [ "$OS" = "Linux" ]; then
-    xdg-open $url
+    x-www-browser "$url"
 else
-    open $url
+    open "$url"
 fi
