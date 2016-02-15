@@ -7,6 +7,12 @@ if [ "$FILE" = "" ]; then
     exit 1
 fi
 
+TEST_DEP=
+if [ "$FILE" = "--test" ]; then
+    TEST_DEP=1
+    FILE=$2
+fi
+
 if [ ! -e $FILE ]; then
     echo "'$FILE' is not existed"
     exit 1
@@ -15,3 +21,11 @@ fi
 echo "(source gnu)" > Cask
 echo "(source melpa)" >> Cask
 echo "(package-file" '"'$FILE'"'")" >> Cask
+
+if [ ! -z $TEST_DEP ]; then
+    cat <<EOF >> Cask
+
+(development
+ (depends-on "ert"))
+EOF
+fi
