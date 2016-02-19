@@ -2,6 +2,8 @@
 use strict;
 use warnings;
 
+use 5.014;
+
 use Encode ();
 use HTTP::Tiny ();
 
@@ -43,7 +45,11 @@ my %LICENSE_URL = (
     },
 );
 
-my $arg = shift or die "Usage: $0 license";
+my $arg = shift or help();
+if ($arg eq '-h' or $arg eq '--help') {
+    help();
+}
+
 my $type = lc $arg;
 
 my $output;
@@ -66,6 +72,11 @@ if (exists $LICENSE{$type}) {
 }
 
 print $output;
+
+sub help {
+    say "Usage: license-gen.pl [GPL3|MIT]";
+    exit 0;
+}
 
 sub this_year {
     return (localtime)[5] + 1900;
