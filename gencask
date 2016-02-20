@@ -20,6 +20,7 @@ fi
 
 echo "(source gnu)" > Cask
 echo "(source melpa)" >> Cask
+echo "" >> Cask
 echo "(package-file" '"'$FILE'"'")" >> Cask
 
 if [ ! -z $TEST_DEP ]; then
