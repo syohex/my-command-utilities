@@ -1,20 +1,22 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 set -e
 
 go_packages=("builtin" "unsafe")
+IFS=':' read -r -a gopaths <<< "$GOPATH"
 
-for dir in $GOROOT $(perl -wle 'print $_ for split q{:}, shift' $GOPATH)
+for dir in $GOROOT $gopaths
 do
     pkgdir="$dir/pkg"
     if [ -d $pkgdir ]; then
         packages=$(find $pkgdir -name "*.a" -type f \
-                          | perl -wlp -e "s{$pkgdir/(?:(?:obj|tool)/)?[^/]+/}{} and s{\\.a\$}{}")
-        go_packages=($packages $go_packages)
+                    | grep -v -E '(obj|tool|Godeps)' \
+                    | perl -wlp -e "s{$pkgdir/(?:(?:obj|tool)/)?[^/]+/}{} and s{\\.a\$}{}")
+        go_packages+=($packages)
     fi
 done
 
-PACKAGE=$(print -l $go_packages | grep -v Godeps | sort | uniq | peco)
+PACKAGE=$(printf '%s\n' "${go_packages[@]}" | sort -u | peco)
 if [ "$PACKAGE" != "" ];then
     if [ -z "$GOROOT" ]; then
         godoc $PACKAGE | $PAGER
