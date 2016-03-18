@@ -2,7 +2,11 @@
 
 ## `cdr_cleanup.pl`
 
-Clean up zsh cdr directories which no longer exists.
+Clean up zsh cdr directories which no longer exist.
+
+## `dict`
+
+Lookup Eijiro dictionary files.
 
 ## `focus_emacs.sh`
 
@@ -18,14 +22,26 @@ Clean up zsh cdr directories which no longer exists.
 
 Generate Cask file
 
+## `git-ignore`
+
+Generate .gitignore
+
 ## `godocp`
 
 `godoc` + `peco`
+
+## `license-gen.pl"
+
+Generate license file.
 
 ## `test-emacs`
 
 My minimal Emacs configuration for testing package.
 
-## window_move.pl
+## `weblio`
+
+Search query from Weblio.
+
+## `window_move.pl`
 
 Move window position
