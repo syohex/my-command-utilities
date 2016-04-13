@@ -12,7 +12,7 @@ fi
 for dir in $GOROOT $gopaths
 do
     pkgdir="$dir/pkg"
-    if [ -d $pkgdir ]; then
+    if [[ -d $pkgdir ]]; then
         packages=$(find $pkgdir -name "*.a" -type f \
                     | grep -v -E '(obj|tool|Godeps)' \
                     | perl -wlp -e "s{$pkgdir/(?:(?:obj|tool)/)?[^/]+/}{} and s{\\.a\$}{}")
@@ -21,8 +21,8 @@ do
 done
 
 PACKAGE=$(printf '%s\n' "${go_packages[@]}" | sort -u | peco)
-if [ "$PACKAGE" != "" ];then
-    if [ -z "$GOROOT" ]; then
+if [[ "$PACKAGE" != "" ]];then
+    if [[ -z "$GOROOT" ]]; then
         godoc $PACKAGE | $PAGER
     else
         $GOROOT/bin/godoc $PACKAGE | $PAGER
