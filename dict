@@ -8,7 +8,7 @@ use Encode;
 use Term::ANSIColor qw(:constants);
 use File::Which qw(which);
 
-my $search_word = shift or die "Usage: dict search_word";
+my $search_word = shift or die "Usage: dict [-s] search_word";
 my $statement_flag = 0;
 if ($search_word eq '-s') {
     $search_word = shift;
