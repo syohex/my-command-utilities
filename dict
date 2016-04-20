@@ -7,10 +7,13 @@ use Encode;
 
 use Term::ANSIColor qw(:constants);
 use File::Which qw(which);
-use File::Spec ();
 
 unless ($ENV{EIJIRO_DIR}) {
     die "Environment variable 'EIJIRO_DIR' not defined";
+}
+
+if (do {`sary -h >/dev/null 2>&1`; $?;} != 0) {
+    die "Please install 'sary'";
 }
 
 my $search_word = shift or die "Usage: dict [-s] search_word";
@@ -33,10 +36,6 @@ if ($search_word =~ m{\A[a-z_\- ]+}i) {
 }
 unless (-e $dict_path) {
     die "Dictionary file $dict_path is not existed";
-}
-
-unless (which('sary')) {
-    die "Please install sary";
 }
 
 my @cmd = qq{sary $search_word $dict_path};
