@@ -7,6 +7,11 @@ use Encode;
 
 use Term::ANSIColor qw(:constants);
 use File::Which qw(which);
+use File::Spec ();
+
+unless ($ENV{EIJIRO_DIR}) {
+    die "Environment variable 'EIJIRO_DIR' not defined";
+}
 
 my $search_word = shift or die "Usage: dict [-s] search_word";
 my $statement_flag = 0;
@@ -19,12 +24,12 @@ $search_word = Encode::decode_utf8($search_word);
 
 my $dict_path;
 if ($search_word =~ m{\A[a-z_\- ]+}i) {
-    $dict_path = '/home/syohei/local/dict/eijiro127.sdic';
+    $dict_path = File::Spec->catfile($ENV{EIJIRO_DIR}, "eijiro127.sdic");
     unless ($statement_flag) {
         $search_word = "'>${search_word}<'";
     }
 } else {
-    $dict_path = '/home/syohei/local/dict/waeiji127.sdic';
+    $dict_path = File::Spec->catfile($ENV{EIJIRO_DIR}, "waeiji127.sdic");
 }
 unless (-e $dict_path) {
     die "Dictionary file $dict_path is not existed";
