@@ -6,7 +6,8 @@ Clean up zsh cdr directories which no longer exist.
 
 ## `dict`
 
-Lookup Eijiro dictionary files.
+Lookup Eijiro dictionary files. You must set Eijiro dictionary path to
+environment variable `EIJIRO_DIR`.
 
 ## `focus_emacs.sh`
 
