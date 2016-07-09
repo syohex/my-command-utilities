@@ -14,7 +14,7 @@ do
     pkgdir="$dir/pkg"
     if [[ -d $pkgdir ]]; then
         packages=$(find $pkgdir -name "*.a" -type f \
-                    | grep -v -E '(obj|tool|Godeps)' \
+                    | grep -v -E '(obj|tool|Godeps|internal|vendor)' \
                     | perl -wlp -e "s{$pkgdir/(?:(?:obj|tool)/)?[^/]+/}{} and s{\\.a\$}{}")
         go_packages+=($packages)
     fi
