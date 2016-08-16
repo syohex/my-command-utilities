@@ -8,7 +8,7 @@ if [ "$SYSTEM" = "Darwin" ]; then
     EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
 fi
 
-ELPA_DIR=.cask/$($EMACS -Q --batch --eval '(princ emacs-version)')/elpa
+ELPA_DIR=$(env EMACS=${EMACS} cask package-directory)
 
 TEST_CONFIG=${HOME}/dot_files/emacs/test_emacs
 
