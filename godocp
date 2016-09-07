@@ -2,25 +2,7 @@
 
 set -e
 
-go_packages=("builtin" "unsafe")
-IFS=':' read -r -a gopaths <<< "$GOPATH"
-
-if [[ "$GOROOT" == "" ]]; then
-    GOROOT=$(go env GOROOT)
-fi
-
-for dir in $GOROOT $gopaths
-do
-    pkgdir="$dir/pkg"
-    if [[ -d $pkgdir ]]; then
-        packages=$(find $pkgdir -name "*.a" -type f \
-                    | grep -v -E '(obj|tool|Godeps|internal|vendor)' \
-                    | perl -wlp -e "s{$pkgdir/(?:(?:obj|tool)/)?[^/]+/}{} and s{\\.a\$}{}")
-        go_packages+=($packages)
-    fi
-done
-
-PACKAGE=$(printf '%s\n' "${go_packages[@]}" | sort -u | peco)
+PACKAGE=$(gopkgs | sort -u | peco)
 if [[ "$PACKAGE" != "" ]];then
     if [[ -z "$GOROOT" ]]; then
         godoc $PACKAGE | $PAGER
