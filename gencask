@@ -9,7 +9,7 @@ if [ "$FILE" = "--test" ]; then
     FILE=$2
 fi
 
-if [ "$FILE" != "" -a ! -e $FILE ]; then
+if [ "$FILE" != "" -a ! -e "$FILE" ]; then
     echo "'$FILE' is not existed"
     exit 1
 fi
