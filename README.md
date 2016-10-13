@@ -9,16 +9,6 @@ Clean up zsh cdr directories which no longer exist.
 Lookup Eijiro dictionary files. You must set Eijiro dictionary path to
 environment variable `EIJIRO_DIR`.
 
-## `focus_emacs.sh`
-
-- Launch Emacs if Emacs does not run yet.
-- Focus Emacs window if Emacs is already running.
-
-## `focus_firefox.sh`
-
-- Launch Firefox if Firefox does not run yet.
-- Focus Firefox window if Firefox is already running.
-
 ## `gencask`
 
 Generate Cask file
@@ -31,7 +21,7 @@ Generate .gitignore
 
 `godoc` + `peco`
 
-## `license-gen.pl"
+## `license-gen.pl`
 
 Generate license file.
 
