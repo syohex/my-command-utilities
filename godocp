@@ -2,7 +2,7 @@
 
 set -e
 
-PACKAGE=$(gopkgs | grep -v internal | sort -u | peco)
+PACKAGE=$(gopkgs | grep -E -v '(internal|vendor)' | sort -u | peco)
 if [[ "$PACKAGE" != "" ]];then
     if [[ -z "$GOROOT" ]]; then
         godoc $PACKAGE | $PAGER
