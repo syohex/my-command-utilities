@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env sh
 set -e
 
 FILE=$1
@@ -14,9 +14,11 @@ if [ "$FILE" != "" -a ! -e "$FILE" ]; then
     exit 1
 fi
 
-echo "(source gnu)" > Cask
-echo "(source melpa)" >> Cask
-echo "" >> Cask
+cat << EOF > Cask
+(source gnu)
+(source melpa)
+
+EOF
 
 if [ "$FILE" != "" ]; then
     echo "(package-file" '"'$FILE'"'")" >> Cask
