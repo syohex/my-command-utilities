@@ -1,0 +1,23 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use Getopt::Long;
+
+Getopt::Long::Configure(
+    'pass_through',
+    'no_ignore_case',
+    'bundling'
+);
+
+my $remove_empty;
+Getopt::Long::GetOptions(
+    "e|empty" => \$remove_empty,
+);
+
+my @inputs = <STDIN>;
+my @sorted = sort { length($a) <=> length($b) } @inputs;
+if ($remove_empty) {
+    @sorted = grep { $_ !~ /\A\s*\z/ } @sorted;
+}
+print @sorted;
