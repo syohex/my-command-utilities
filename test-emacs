@@ -13,7 +13,11 @@ ELPA_DIR=$(env EMACS=${EMACS} cask package-directory)
 TEST_CONFIG=${HOME}/dot_files/emacs/test_emacs
 
 if [ -e "Cask" -a -d "${ELPA_DIR}" ]; then
-    cask exec $EMACS -Q -l $TEST_CONFIG $@
+    if [ "$SYSTEM" = "Darwin" ]; then
+        cask emacs -Q -l $TEST_CONFIG $@
+    else
+        cask exec $EMACS -Q -l $TEST_CONFIG $@
+    fi
 else
     $EMACS -Q -l $TEST_CONFIG $@
 fi
