@@ -9,7 +9,7 @@ if [ "$FILE" = "--test" ]; then
     FILE=$2
 fi
 
-if [ "$FILE" != "" -a ! -e "$FILE" ]; then
+if [ "$FILE" = "" ] || [ ! -e "$FILE" ]; then
     echo "Error: '$FILE' is not existed"
     exit 1
 fi
@@ -21,7 +21,7 @@ cat << EOF > Cask
 EOF
 
 if [ "$FILE" != "" ]; then
-    echo "(package-file" '"'$FILE'"'")" >> Cask
+    echo "(package-file \"$FILE\")" >> Cask
 fi
 
 if [ ! -z $TEST_DEP ]; then

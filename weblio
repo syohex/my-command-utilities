@@ -8,7 +8,7 @@ fi
 
 query="$1"
 shift
-for arg in $@
+for arg in "$@"
 do
     query="${query}+${arg}"
 done
