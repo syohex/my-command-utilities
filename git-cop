@@ -11,4 +11,5 @@ if [ "$local_branch" = "" ]; then
     exit
 fi
 
+echo "Checkout $local_branch"
 git checkout -b $local_branch $branch
