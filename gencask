@@ -1,15 +1,14 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -e
 
 FILE=$1
 
-TEST_DEP=
-if [ "$FILE" = "--test" ]; then
-    TEST_DEP=1
-    FILE=$2
+if [[ "$FILE" == "" ]]; then
+    echo "Error emacs lisp file is not specified"
+    exit 1
 fi
 
-if [ "$FILE" = "" ] || [ ! -e "$FILE" ]; then
+if [[ ! -e "$FILE" ]]; then
     echo "Error: '$FILE' is not existed"
     exit 1
 fi
@@ -20,14 +19,4 @@ cat << EOF > Cask
 
 EOF
 
-if [ "$FILE" != "" ]; then
-    echo "(package-file \"$FILE\")" >> Cask
-fi
-
-if [ ! -z $TEST_DEP ]; then
-    cat <<EOF >> Cask
-
-(development
- (depends-on "ert"))
-EOF
-fi
+echo "(package-file \"$FILE\")" >> Cask

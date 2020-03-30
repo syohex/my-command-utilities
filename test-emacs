@@ -1,23 +1,15 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -e
 
 EMACS="${EMACS:-emacs}"
 
 SYSTEM=$(uname -s)
-if [ "$SYSTEM" = "Darwin" ]; then
-    EMACS="/Applications/Emacs.app/Contents/MacOS/Emacs"
-fi
-
 ELPA_DIR=$(env EMACS=${EMACS} cask package-directory)
 
 TEST_CONFIG=${HOME}/dot_files/emacs/test_emacs
 
-if [ -e "Cask" ]  && [ -d "${ELPA_DIR}" ]; then
-    if [ "$SYSTEM" = "Darwin" ]; then
-        cask emacs -Q -l "$TEST_CONFIG" "$@"
-    else
-        cask exec "$EMACS" -Q -l "$TEST_CONFIG" "$@"
-    fi
+if [[ -e "Cask" && -d "${ELPA_DIR}" ]]; then
+     cask exec "$EMACS" -Q -l "$TEST_CONFIG" "$@"
 else
     "$EMACS" -Q -l "$TEST_CONFIG" "$@"
 fi

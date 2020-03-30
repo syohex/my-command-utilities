@@ -1,16 +1,13 @@
-#!/bin/sh
-
+#!/usr/bin/env bash
 set -e
 
-if [ ! -d ~/bin ]; then
+if [[ ! -d ~/bin ]]; then
     mkdir -p ~/bin
 fi
 
-for file in *
+for file in gencask git-ignore license-gen.pl test-emacs
 do
-    if [ $file != "setup.sh" -a $file != "README.md" ]; then
-        echo "Install $file"
-        ln -fs ${PWD}/${file} ~/bin
-        chmod +x ~/bin/${file}
-    fi
+    echo "Install $file"
+    ln -fs ${PWD}/${file} ~/bin
+    chmod +x ~/bin/${file}
 done
