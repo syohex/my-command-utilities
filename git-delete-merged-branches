@@ -52,7 +52,7 @@ def main() -> None:
             continue
 
         proc = subprocess.run(['git', 'branch', '-d', branch])
-        if proc.returncode == 0:
+        if proc.returncode != 0:
             print(f"Failed to delete 'f{branch}'", file=sys.stderr)
             return
 
