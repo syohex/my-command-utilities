@@ -65,7 +65,7 @@ def main():
             for line in keep_lines:
                 f.write(line + '\n')
 
-    print(f'Delete {deleted} lines')
+    print(f'Delete {deleted} directories')
 
 
 if __name__ == '__main__':
