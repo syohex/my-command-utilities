@@ -51,7 +51,7 @@ def main() -> None:
         if args.dry_run:
             continue
 
-        proc = subprocess.run(['git', 'branch', '-d', branch])
+        proc = subprocess.run(['git', 'branch', '-d', branch], stdout=subprocess.DEVNULL)
         if proc.returncode != 0:
             print(f"Failed to delete 'f{branch}'", file=sys.stderr)
             return
