@@ -2,12 +2,22 @@
 set -e
 
 if [[ ! -d ~/bin ]]; then
-    mkdir -p ~/bin
+  mkdir -p ~/bin
 fi
 
-for file in gencask git-ignore license-gen.pl test-emacs cdr_cleanup
-do
-    echo "Install $file"
-    ln -fs "${PWD}/${file}" ~/bin
-    chmod +x ~/bin/${file}
+commands=(
+  gencask
+  git-ignore
+  license-gen.pl
+  test-emacs
+  cdr_cleanup
+  git-delete-merged-branches
+)
+
+for file in "${commands[@]}"; do
+  echo "Install $file"
+
+  dest="${HOME}/bin/${file}"
+  ln -fs "${PWD}/${file}" "$dest"
+  chmod +x "$dest"
 done
