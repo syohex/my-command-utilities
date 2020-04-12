@@ -3,13 +3,12 @@ set -e
 
 EMACS="${EMACS:-emacs}"
 
-SYSTEM=$(uname -s)
-ELPA_DIR=$(env EMACS=${EMACS} cask package-directory)
+ELPA_DIR=$(env EMACS="${EMACS}" cask package-directory)
 
-TEST_CONFIG=${HOME}/dot_files/emacs/test_emacs
+TEST_CONFIG="${HOME}/dot_files/emacs/test_emacs"
 
 if [[ -e "Cask" && -d "${ELPA_DIR}" ]]; then
-     cask exec "$EMACS" -Q -l "$TEST_CONFIG" "$@"
+  cask exec "$EMACS" -Q -l "$TEST_CONFIG" "$@"
 else
-    "$EMACS" -Q -l "$TEST_CONFIG" "$@"
+  "$EMACS" -Q -l "$TEST_CONFIG" "$@"
 fi

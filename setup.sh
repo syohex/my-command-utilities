@@ -12,6 +12,7 @@ commands=(
   test-emacs
   cdr_cleanup
   git-delete-merged-branches
+  weblio
 )
 
 for file in "${commands[@]}"; do

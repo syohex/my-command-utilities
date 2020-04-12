@@ -1,23 +1,25 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -e
 
-if [ "$1" = "" ]; then
-    echo "Usage: weblio 'word' or 'sentense'"
-    exit
+if [[ "$1" == "" ]]; then
+  echo "Usage: weblio 'word' or 'sentence'"
+  exit
 fi
 
 query="$1"
 shift
-for arg in "$@"
-do
-    query="${query}+${arg}"
+for arg in "$@"; do
+  query="${query}+${arg}"
 done
 
 url="http://ejje.weblio.jp/sentence/content/\"${query}\""
 
-OS=$(uname)
-if [ "$OS" = "Linux" ]; then
-    x-www-browser "$url"
+if command -v x-www-browser >/dev/null; then # Linux
+  x-www-browser "$url"
+elif command -v open >/dev/null; then # macOS
+  open "$url"
+elif command -v start >/dev/null; then # Windows
+  start "$url"
 else
-    open "$url"
+  echo "$url"
 fi

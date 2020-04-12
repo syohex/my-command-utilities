@@ -4,16 +4,16 @@ set -e
 FILE=$1
 
 if [[ "$FILE" == "" ]]; then
-    echo "Error emacs lisp file is not specified"
-    exit 1
+  echo "Usage: gencask elisp_file"
+  exit 1
 fi
 
 if [[ ! -e "$FILE" ]]; then
-    echo "Error: '$FILE' is not existed"
-    exit 1
+  echo "Error: '$FILE' is not existed"
+  exit 1
 fi
 
-cat << EOF > Cask
+cat <<EOF >Cask
 (source gnu)
 (source melpa)
 

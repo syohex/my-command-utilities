@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-
 set -e
 
 PACKAGE=$(gopkgs | grep -E -v '(internal|vendor)' | sort -u | peco)
-if [[ "$PACKAGE" != "" ]];then
-    if [[ -z "$GOROOT" ]]; then
-        godoc $PACKAGE | $PAGER
-    else
-        $GOROOT/bin/godoc $PACKAGE | $PAGER
-    fi
+if [[ "$PACKAGE" != "" ]]; then
+  if [[ -z "$GOROOT" ]]; then
+    godoc "$PACKAGE" | $PAGER
+  else
+    "$GOROOT/bin/godoc" "$PACKAGE" | $PAGER
+  fi
 fi
