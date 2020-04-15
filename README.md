@@ -1,38 +1,24 @@
 # My Command Utilities
 
-## `cdr_cleanup.pl`
+## Examples
 
-Clean up zsh cdr directories which no longer exist.
+```bash
+# clean up zsh cdr directories which no longer exists or hidden directory
+cdr_cleanup
 
-## `dict`
+# Generate Emacs Cask file
+gencask some-elisp-file.el
 
-Lookup Eijiro dictionary files. You must set Eijiro dictionary path to
-environment variable `EIJIRO_DIR`.
+# Output specified language .gitignore
+git-ignore python
 
-## `gencask`
+# Delete merged branches
+git delete-merged-branch
 
-Generate Cask file
+# Git blame with pull request number
+# - Original code: https://gist.github.com/kazuho/eab551e5527cb465847d6b0796d64a39
+git blame-pr
 
-## `git-ignore`
-
-Generate .gitignore
-
-## `godocp`
-
-`godoc` + `peco`
-
-## `license-gen.pl`
-
-Generate license file.
-
-## `test-emacs`
-
-My minimal Emacs configuration for testing package.
-
-## `weblio`
-
-Search query from Weblio.
-
-## `window_move.pl`
-
-Move window position
+# Launch Emacs with my minimum configuration for testing package
+test-emacs
+```
