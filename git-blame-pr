@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+import re
+import subprocess
+import sys
+
+# Original code: https://gist.github.com/kazuho/eab551e5527cb465847d6b0796d64a39
+
+merge_commit_re = re.compile(r'Merge\s+(?:pull\s+request|pr)\s+#?(\d+)\s', re.IGNORECASE)
+
+
+def lookup_pull_request(commit_id: str) -> str:
+    proc = subprocess.run(['git', 'show', '--oneline', commit_id], stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        return commit_id
+
+    commit_message = proc.stdout.decode('utf-8')
+
+    global merge_commit_re
+    match = merge_commit_re.search(commit_message)
+    if match is None:
+        return commit_id
+
+    return f'PR #{match.group(1):<5}'
+
+
+def main() -> None:
+    if len(sys.argv) < 2:
+        print('Usage: git-blame-pr file...', file=sys.stderr)
+        sys.exit(1)
+
+    command = ['git', 'blame', '--first-parent', *sys.argv[1:]]
+    proc = subprocess.run(command, stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        print(f'Failed to execute {command}', file=sys.stderr)
+        sys.exit(1)
+
+    pr_cache = {}
+
+    blame_line_re = re.compile(r'(\S+).*?\) (.*)$')
+    output = proc.stdout.decode('utf-8')
+    for line in output.splitlines():
+        if line == '':  # Note: line is empty if original line contains form feed(^L) character
+            continue
+
+        match = blame_line_re.match(line)
+        if match is None:
+            raise Exception('Internal Error: please check git blame --first-parent output')
+
+        commit_id, source_code = match.group(1), match.group(2)
+        if commit_id not in pr_cache:
+            pr_cache[commit_id] = lookup_pull_request(commit_id)
+
+        print(f'{pr_cache[commit_id]} {source_code}')
+
+
+if __name__ == '__main__':
+    main()
