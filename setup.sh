@@ -14,6 +14,7 @@ commands=(
   git-delete-merged-branches
   git-blame-pr
   weblio
+  lang-setup
 )
 
 for file in "${commands[@]}"; do
