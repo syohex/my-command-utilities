@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+
+def is_c_like_language(lang: str) -> bool:
+    return re.match(r'(?:c|c\+\+|objc)', lang.lower()) is not None
+
+
+def generate_clang_format():
+    if Path('.clang-format').exists():
+        return
+
+    clang_format = r'''
+BasedOnStyle: LLVM
+IndentWidth: 4
+ColumnLimit: 132
+SortIncludes: false
+AllowShortFunctionsOnASingleLine: None
+AlwaysBreakTemplateDeclarations: true
+'''
+    with open('.clang-format', 'w', encoding='utf-8') as f:
+        f.write(clang_format.lstrip())
+
+    print('Generate .clang-format')
+
+
+def setup_c(lang: str):
+    print(f'Setup for {lang} language')
+
+    generate_clang_format()
+
+
+def generate_gitignore(lang):
+    if Path('.gitignore').exists():
+        return
+
+    proc = subprocess.run(['git-ignore', lang], stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        print(f"Cannot generate .gitignore for '{lang}'")
+        return
+
+    with open('.gitignore', 'w') as f:
+        f.write(proc.stdout.decode('utf-8'))
+
+    print('Generate .gitignore')
+
+
+def generate_readme_md():
+    if Path('README.md').exists():
+        return
+
+    print('Generate README.md')
+    with open('README.md', 'w') as f:
+        f.write('# ')
+
+
+def main():
+    if len(sys.argv) < 2:
+        print('Usage: lang-setup language')
+        sys.exit(1)
+
+    lang = sys.argv[1]
+    if is_c_like_language(lang):
+        setup_c(lang)
+
+    generate_gitignore(lang)
+    generate_readme_md()
+
+
+if __name__ == '__main__':
+    main()
