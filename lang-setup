@@ -6,7 +6,11 @@ from pathlib import Path
 
 
 def is_c_like_language(lang: str) -> bool:
-    return re.match(r'(?:c|c\+\+|objc)', lang.lower()) is not None
+    return re.match(r'(?:c|c\+\+|objc)$', lang.lower()) is not None
+
+
+def is_js_like_language(lang: str) -> bool:
+    return re.match(r'(?:|js|node(?:js)|ts|typescript)$', lang.lower()) is not None
 
 
 def generate_clang_format():
@@ -31,6 +35,43 @@ def setup_c(lang: str):
     print(f'Setup for {lang} language')
 
     generate_clang_format()
+
+
+def npm_init():
+    proc = subprocess.run(['npm', 'init', '-y'])
+    if proc.returncode == 0:
+        print("Failed 'npm init -y'")
+        return
+
+    print('npm init')
+
+
+def generate_prettier():
+    if Path('.prettierrc').exists():
+        return
+
+    config = r'''
+{
+  "semi": false,
+  "singleQuote": true,
+  "endOfLine": "lf",
+  "trailingComma": "all",
+  "printWidth": 120,
+  "tabWidth": 2
+}
+'''
+    with open('.prettierrc', 'w', encoding='utf-8') as f:
+        f.write(config)
+
+    print("Generate .prettierrc")
+
+
+def setup_js(lang: str):
+    if Path('package.json').exists():
+        return
+
+    npm_init()
+    generate_prettier()
 
 
 def generate_gitignore(lang):
@@ -65,6 +106,8 @@ def main():
     lang = sys.argv[1]
     if is_c_like_language(lang):
         setup_c(lang)
+    elif is_js_like_language(lang):
+        setup_js(lang)
 
     generate_gitignore(lang)
     generate_readme_md()
