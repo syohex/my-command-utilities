@@ -110,6 +110,11 @@ def setup_cmake():
 CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 
 PROJECT({cur_dir})
+
+ENABLE_LANGUAGE(CXX)
+SET(CMAKE_CXX_STANDARD 14)
+SET(CMAKE_CXX_STANDARD_REQUIRED ON)
+SET(CMAKE_CXX_EXTENSIONS OFF)
 '''
     with open('CMakeLists.txt', 'w', encoding='utf-8') as f:
         f.write(cmake.lstrip())
