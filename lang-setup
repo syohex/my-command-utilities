@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import re
 import subprocess
 import sys
@@ -98,6 +99,22 @@ def generate_readme_md():
         f.write('# ')
 
 
+def setup_cmake():
+    if Path('CMakeLists.txt').exists():
+        return
+
+    print('Generate CMakeLists.txt')
+
+    cur_dir = Path(os.getcwd()).name
+    cmake = fr'''
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
+
+PROJECT({cur_dir})
+'''
+    with open('CMakeLists.txt', 'w', encoding='utf-8') as f:
+        f.write(cmake.lstrip())
+
+
 def main():
     if len(sys.argv) < 2:
         print('Usage: lang-setup language')
@@ -108,6 +125,8 @@ def main():
         setup_c(lang)
     elif is_js_like_language(lang):
         setup_js(lang)
+    elif lang.lower() == 'cmake':
+        setup_cmake()
 
     generate_gitignore(lang)
     generate_readme_md()
