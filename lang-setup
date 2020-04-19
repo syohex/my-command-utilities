@@ -115,6 +115,8 @@ ENABLE_LANGUAGE(CXX)
 SET(CMAKE_CXX_STANDARD 14)
 SET(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_EXTENSIONS OFF)
+
+SET(CMAKE_CXX_FLAGS "-Wall ${{CMAKE_CXX_FLAGS}}")
 '''
     with open('CMakeLists.txt', 'w', encoding='utf-8') as f:
         f.write(cmake.lstrip())
