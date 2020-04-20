@@ -3,7 +3,9 @@ import os
 import re
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
+from typing import List
 
 
 def is_c_like_language(lang: str) -> bool:
@@ -75,13 +77,13 @@ def setup_js(lang: str):
     generate_prettier()
 
 
-def generate_gitignore(lang):
+def generate_gitignore(langs: List[str]):
     if Path('.gitignore').exists():
         return
 
-    proc = subprocess.run(['git-ignore', lang], stdout=subprocess.PIPE)
+    proc = subprocess.run(['git-ignore', *langs], stdout=subprocess.PIPE)
     if proc.returncode != 0:
-        print(f"Cannot generate .gitignore for '{lang}'")
+        print(f"Cannot generate .gitignore for '{langs}'")
         return
 
     with open('.gitignore', 'w') as f:
@@ -122,20 +124,59 @@ SET(CMAKE_CXX_FLAGS "-Wall ${{CMAKE_CXX_FLAGS}}")
         f.write(cmake.lstrip())
 
 
+def setup_mit_license():
+    if Path('LICENSE').exists():
+        return
+
+    now = datetime.now()
+    license_text = fr'''Copyright {now.year} Shohei YOSHIDA
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+'''
+
+    print('Generate LICENSE')
+
+    with open('LICENSE', 'w', encoding='utf-8') as f:
+        f.write(license_text)
+
+
 def main():
     if len(sys.argv) < 2:
         print('Usage: lang-setup language')
         sys.exit(1)
 
-    lang = sys.argv[1]
-    if is_c_like_language(lang):
-        setup_c(lang)
-    elif is_js_like_language(lang):
-        setup_js(lang)
-    elif lang.lower() == 'cmake':
-        setup_cmake()
+    gitignore_langs: List[str] = []
+    for lang in sys.argv[1:]:
+        if is_c_like_language(lang):
+            setup_c(lang)
+        elif is_js_like_language(lang):
+            setup_js(lang)
+        elif lang.lower() == 'cmake':
+            setup_cmake()
+        elif lang.lower() == 'mit':
+            setup_mit_license()
+            continue
 
-    generate_gitignore(lang)
+        gitignore_langs.append(lang)
+
+    generate_gitignore(gitignore_langs)
+
     generate_readme_md()
 
 
