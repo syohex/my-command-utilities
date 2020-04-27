@@ -26,7 +26,7 @@ IndentWidth: 4
 ColumnLimit: 132
 SortIncludes: false
 AllowShortFunctionsOnASingleLine: None
-AlwaysBreakTemplateDeclarations: true
+AlwaysBreakTemplateDeclarations: Yes
 '''
     with open('.clang-format', 'w', encoding='utf-8') as f:
         f.write(clang_format.lstrip())
