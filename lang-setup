@@ -3,7 +3,6 @@ import os
 import re
 import subprocess
 import sys
-from datetime import datetime
 from pathlib import Path
 from typing import List
 
@@ -69,11 +68,27 @@ def generate_prettier():
     print("Generate .prettierrc")
 
 
+def typescript_init():
+    commands = [
+        ['npm', 'install', '-D', 'typescript'],
+        ['npx', 'tsc', '--init'],
+    ]
+
+    for cmd in commands:
+        proc = subprocess.run(cmd)
+        if proc.returncode != 0:
+            print(f'Failed to executed "{cmd}"', file=sys.stderr)
+            return
+
+
 def setup_js(lang: str):
     if Path('package.json').exists():
         return
 
     npm_init()
+    if lang == "typescript":
+        typescript_init()
+
     generate_prettier()
 
 
@@ -81,13 +96,13 @@ def generate_gitignore(langs: List[str]):
     if Path('.gitignore').exists():
         return
 
-    proc = subprocess.run(['git-ignore', *langs], stdout=subprocess.PIPE)
+    # I got error by using urllib.request. I use curl instead of it
+    url = 'https://www.gitignore.io/api/{}'.format('%2C'.join(langs))
+    command = ['curl', '-L', '-o', '.gitignore', '--silent', url]
+    proc = subprocess.run(command)
     if proc.returncode != 0:
-        print(f"Cannot generate .gitignore for '{langs}'")
+        print('Failed to download .gitignore', file=sys.stderr)
         return
-
-    with open('.gitignore', 'w') as f:
-        f.write(proc.stdout.decode('utf-8'))
 
     print('Generate .gitignore')
 
