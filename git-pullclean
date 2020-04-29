@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+git pull --rebase origin $branch
+git fetch -p
+git delete-merged-branches

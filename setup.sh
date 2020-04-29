@@ -13,6 +13,7 @@ commands=(
   cdr_cleanup
   git-delete-merged-branches
   git-blame-pr
+  git-pullclean
   weblio
   lang-setup
 )
