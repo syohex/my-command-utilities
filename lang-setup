@@ -55,7 +55,7 @@ def generate_prettier():
 
     config = r'''
 {
-  "semi": false,
+  "semi": true,
   "singleQuote": true,
   "endOfLine": "lf",
   "trailingComma": "all",
@@ -172,13 +172,34 @@ SOFTWARE.
         f.write(license_text)
 
 
+def usage():
+    print('''Usage: lang-setup features
+
+Supported features
+
+Languages
+- c, c++, objc
+- nodejs(js), typescript(ts)
+
+Build tool
+- cmake
+
+License
+- mit
+''')
+
+
 def main():
     if len(sys.argv) < 2:
-        print('Usage: lang-setup language')
+        usage()
         sys.exit(1)
 
     gitignore_langs: List[str] = []
     for lang in sys.argv[1:]:
+        if lang == '--help' or lang == '-h':
+            usage()
+            sys.exit(0)
+
         if is_c_like_language(lang):
             setup_c(lang)
         elif is_js_like_language(lang):
