@@ -50,12 +50,32 @@ def collect_live_directories() -> Tuple[List[str], int]:
     return lines, deleted
 
 
+def filter_lines(lines: List[str], regexps: List[str]) -> Tuple[List[str], int]:
+    ret: List[str] = []
+    filtered = 0
+    for regexp in regexps:
+        r = re.compile(fr'{regexp}')
+        for line in lines:
+            if r.search(line):
+                filtered += 1
+                continue
+
+            ret.append(line)
+
+    return ret, filtered
+
+
 def main():
     parser = argparse.ArgumentParser(description='cleanup zsh cdr non existed directories')
     parser.add_argument('--dry-run', action='store_true', default=False, dest='dry_run')
+    parser.add_argument('filters', nargs='*')
     args = parser.parse_args()
 
     keep_lines, deleted = collect_live_directories()
+
+    filtered = 0
+    if len(args.filters) > 0:
+        keep_lines, filtered = filter_lines(keep_lines, args.filters)
 
     if args.dry_run:
         for line in keep_lines:
@@ -65,7 +85,7 @@ def main():
             for line in keep_lines:
                 f.write(line + '\n')
 
-    print(f'Delete {deleted} directories')
+    print(f'Delete {deleted} directories, Filter {filtered} directories')
 
 
 if __name__ == '__main__':
