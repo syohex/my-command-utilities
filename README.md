@@ -6,6 +6,12 @@
 # clean up zsh cdr directories which no longer exists or hidden directory
 cdr_cleanup
 
+# Print only remaining directories
+cdr_cleanup --dry-run
+
+# cleanup directories which no longer exists and are matched filter
+cdr_cleanup filter_regexp
+
 # Generate Emacs Cask file
 gencask some-elisp-file.el
 
