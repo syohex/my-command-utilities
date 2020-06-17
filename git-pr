@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+import re
+import subprocess
+import sys
+import webbrowser
+
+
+def current_branch_name() -> str:
+    proc = subprocess.run(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        raise RuntimeError('Could not get current branch name')
+
+    branch = proc.stdout.decode('utf-8').strip()
+    return branch
+
+
+def repository_url() -> str:
+    proc = subprocess.run(['git', 'remote', '-v'], stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        raise RuntimeError('Could not get repository URL')
+
+    regexp = re.compile(r'origin\s+(\S+)')
+    for line in proc.stdout.decode('utf-8').splitlines():
+        line = line.strip()
+        match = regexp.search(line)
+        if not match:
+            continue
+
+        url = match.group(1)
+        if url.startswith('https?://'):
+            return url
+
+        if url.startswith('git@'):
+            return url.replace(':', '/', 1).replace('git@', 'https://', 1).rstrip('.git')
+
+        raise RuntimeError(f'Unsupported URL: {url}')
+
+    raise RuntimeError('Could not get URL from "git remote -v"')
+
+
+def is_pushed(branch: str) -> bool:
+    proc = subprocess.run(['git', 'branch', '-a'], stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        raise RuntimeError('Could not get repository URL')
+
+    regexp = re.compile(fr'remotes/[^/]+/{branch}')
+    return regexp.search(proc.stdout.decode('utf-8')) is not None
+
+
+def main() -> None:
+    branch = current_branch_name()
+    if not is_pushed(branch):
+        print(f'Branch "{branch}" is not pushed yet', file=sys.stderr)
+        sys.exit(1)
+
+    repo_url = repository_url()
+    pr_url = f'{repo_url}/pull/new/{branch}'
+    webbrowser.open_new(pr_url)
+
+
+if __name__ == '__main__':
+    main()
