@@ -14,6 +14,7 @@ commands=(
   git-delete-merged-branches
   git-blame-pr
   git-pullclean
+  git-pr
   weblio
   lang-setup
 )
