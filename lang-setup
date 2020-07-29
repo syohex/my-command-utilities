@@ -5,18 +5,18 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import List
+from typing import List, NoReturn
 
 
 def is_c_like_language(lang: str) -> bool:
-    return re.match(r'(?:c|c\+\+|objc)$', lang.lower()) is not None
+    return re.match(r'(?:c|c\+\+|objc)$', lang) is not None
 
 
 def is_js_like_language(lang: str) -> bool:
-    return re.match(r'(?:|js|node(?:js)|ts|typescript)$', lang.lower()) is not None
+    return re.match(r'(?:|js|node(?:js)|ts|typescript)$', lang) is not None
 
 
-def generate_clang_format():
+def generate_clang_format() -> NoReturn:
     if Path('.clang-format').exists():
         return
 
@@ -34,13 +34,13 @@ AlwaysBreakTemplateDeclarations: Yes
     print('Generate .clang-format')
 
 
-def setup_c(lang: str):
+def setup_c(lang: str) -> NoReturn:
     print(f'Setup for {lang} language')
 
     generate_clang_format()
 
 
-def npm_init():
+def npm_init() -> NoReturn:
     proc = subprocess.run(['npm', 'init', '-y'])
     if proc.returncode == 0:
         print("Failed 'npm init -y'")
@@ -69,7 +69,7 @@ def generate_prettier():
     print("Generate .prettierrc")
 
 
-def typescript_init():
+def typescript_init() -> NoReturn:
     commands = [
         ['npm', 'install', '-D', 'typescript'],
         ['npx', 'tsc', '--init'],
@@ -82,7 +82,7 @@ def typescript_init():
             return
 
 
-def setup_js(lang: str):
+def setup_js(lang: str) -> NoReturn:
     if Path('package.json').exists():
         return
 
@@ -93,7 +93,7 @@ def setup_js(lang: str):
     generate_prettier()
 
 
-def generate_gitignore(langs: List[str]):
+def generate_gitignore(langs: List[str]) -> NoReturn:
     if Path('.gitignore').exists():
         return
 
@@ -106,6 +106,14 @@ def generate_gitignore(langs: List[str]):
         return
 
     print('Generate .gitignore')
+
+
+def generate_gitattributes() -> NoReturn:
+    if Path('.gitattributes').exists():
+        return
+
+    with open('.gitattributes', 'w', encoding='utf-8') as f:
+        f.write("* text=auto\n")
 
 
 def generate_readme_md():
@@ -140,7 +148,7 @@ SET(CMAKE_CXX_FLAGS "-Wall ${{CMAKE_CXX_FLAGS}}")
         f.write(cmake.lstrip())
 
 
-def setup_mit_license():
+def setup_mit_license() -> NoReturn:
     if Path('LICENSE').exists():
         return
 
@@ -189,7 +197,7 @@ License
 ''')
 
 
-def main():
+def main() -> NoReturn:
     if len(sys.argv) < 2:
         usage()
         sys.exit(1)
@@ -200,14 +208,18 @@ def main():
             usage()
             sys.exit(0)
 
+        lang = lang.lower()
         if is_c_like_language(lang):
             setup_c(lang)
         elif is_js_like_language(lang):
             setup_js(lang)
-        elif lang.lower() == 'cmake':
+        elif lang == 'cmake':
             setup_cmake()
-        elif lang.lower() == 'mit':
+        elif lang == 'mit':
             setup_mit_license()
+            continue
+        elif lang.startswith('gitattr'):
+            generate_gitattributes()
             continue
 
         gitignore_langs.append(lang)
