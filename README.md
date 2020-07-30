@@ -21,11 +21,14 @@ git-ignore python
 # Delete merged branches
 git delete-merged-branch
 
-# Pull and cleanup
+# Pull and fetch and cleanup
 git pullclean
 
 # Open new pull request page of current branch
 git pr
+
+# Setup for programming language which I use
+lang-setup
 
 # Git blame with pull request number
 # - Original code: https://gist.github.com/kazuho/eab551e5527cb465847d6b0796d64a39
