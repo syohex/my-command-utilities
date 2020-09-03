@@ -153,12 +153,21 @@ SET(CMAKE_CXX_FLAGS "-Wall ${{CMAKE_CXX_FLAGS}}")
         f.write(cmake.lstrip())
 
 
+def git_name() -> str:
+    proc = subprocess.run(['git', 'config', '--global', 'user.name'], stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        raise Exception("please check 'user.name' in ~/.gitconfig")
+
+    return proc.stdout.decode('utf-8').strip()
+
+
 def setup_mit_license() -> NoReturn:
     if Path('LICENSE').exists():
         return
 
+    name = git_name()
     now = datetime.now()
-    license_text = fr'''Copyright {now.year} Shohei YOSHIDA
+    license_text = fr'''Copyright {now.year} {name}
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -179,10 +188,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-    print('Generate LICENSE')
-
     with open('LICENSE', 'w', encoding='utf-8') as f:
         f.write(license_text)
+
+    print('Generate LICENSE')
 
 
 def usage():
@@ -229,7 +238,8 @@ def main() -> NoReturn:
 
         gitignore_langs.append(lang)
 
-    generate_gitignore(gitignore_langs)
+    if len(gitignore_langs) > 0:
+        generate_gitignore(gitignore_langs)
 
     generate_readme_md()
 
