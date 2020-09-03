@@ -37,3 +37,7 @@ git blame-pr
 # Launch Emacs with my minimum configuration for testing package
 test-emacs
 ```
+
+## License
+
+MIT
