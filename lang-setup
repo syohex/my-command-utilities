@@ -81,6 +81,8 @@ def typescript_init() -> NoReturn:
             print(f'Failed to executed "{cmd}"', file=sys.stderr)
             return
 
+    print("Success typescript initialization")
+
 
 def setup_js(lang: str) -> NoReturn:
     if Path('package.json').exists():
@@ -115,14 +117,17 @@ def generate_gitattributes() -> NoReturn:
     with open('.gitattributes', 'w', encoding='utf-8') as f:
         f.write("* text=auto\n")
 
+    print('Generate .gitattributes')
+
 
 def generate_readme_md():
     if Path('README.md').exists():
         return
 
-    print('Generate README.md')
-    with open('README.md', 'w') as f:
+    with open('README.md', 'w', encoding='utf-8') as f:
         f.write('# ')
+
+    print('Generate README.md')
 
 
 def setup_cmake():
