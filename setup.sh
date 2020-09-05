@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
-if [[ ! -d ~/bin ]]; then
-  mkdir -p ~/bin
-fi
+mkdir -p ~/bin
 
 commands=(
   gencask
   git-ignore
-  license-gen.pl
   test-emacs
   cdr_cleanup
   git-delete-merged-branches
