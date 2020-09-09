@@ -2,10 +2,27 @@
 set -e
 
 branch=$(git rev-parse --abbrev-ref HEAD)
-git pull --rebase origin "$branch"
+mapfile -t remotes < <(git remote)
+
+remote=
+if [[ ${#remotes[@]} == 1 ]]; then
+  remote=${remotes[0]}
+else
+  for remote in "${remotes[@]}"
+  do
+    if [[ $remote == "origin" ]]; then
+      remote="origin"
+      break
+    fi
+  done
+
+  if [[ -z $remote ]]; then
+    echo "Could not found remote 'origin'"
+    exit 1
+  fi
+fi
+
+git pull --rebase "$remote" "$branch"
 git fetch -p
 git delete-merged-branches
 
-if [[ "$1" == "gc" ]]; then
-  git gc
-fi
