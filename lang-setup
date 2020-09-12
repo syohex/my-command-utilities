@@ -95,6 +95,37 @@ def setup_js(lang: str) -> NoReturn:
     generate_prettier()
 
 
+def go_version() -> str:
+    proc = subprocess.run(['go', 'version'], stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        raise Exception('Please install go')
+
+    output = proc.stdout.decode('utf-8')
+    match = re.match(r'go version go(\d+\.\d+)(\.\d+)?', output)
+    if match is None:
+        raise Exception('Could not found go version via "go version"')
+
+    return match.group(1)
+
+
+def setup_golang() -> NoReturn:
+    if Path('go.mod').exists():
+        return
+
+    this_module = Path.cwd().relative_to(Path(os.getenv('GOPATH'), 'src'))
+    version = go_version()
+
+    go_mod = f'''module {this_module}
+
+go {version}
+'''
+
+    with open('go.mod', 'w', encoding='utf-8') as f:
+        f.write(go_mod)
+
+    print("Generate go.mod")
+
+
 def generate_gitignore(langs: List[str]) -> NoReturn:
     if Path('.gitignore').exists():
         return
@@ -227,6 +258,8 @@ def main() -> NoReturn:
             setup_c(lang)
         elif is_js_like_language(lang):
             setup_js(lang)
+        elif lang == 'go' or lang == 'golang':
+            setup_golang()
         elif lang == 'cmake':
             setup_cmake()
         elif lang == 'mit':
