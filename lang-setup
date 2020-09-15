@@ -40,11 +40,33 @@ def setup_c(lang: str) -> NoReturn:
     generate_clang_format()
 
 
+def git_init(args: List[str]) -> NoReturn:
+    if 'git' not in args:
+        return
+
+    proc = subprocess.run(['git', 'init'])
+    if proc.returncode != 0:
+        raise Exception("Failed 'git init")
+
+    print('git init')
+
+    if 'syohex' in args:
+        commands = [
+            ['git', 'config', 'user.name', 'Shohei YOSHIDA'],
+            ['git', 'config', 'user.email', 'syohex@gmail.com'],
+        ]
+
+        for cmd in commands:
+            if subprocess.run(cmd).returncode != 0:
+                raise Exception("Failed '{}'".format(' '.join(cmd)))
+
+            print(' '.join(cmd))
+
+
 def npm_init() -> NoReturn:
     proc = subprocess.run(['npm', 'init', '-y'])
     if proc.returncode == 0:
-        print("Failed 'npm init -y'")
-        return
+        raise Exception("Failed 'npm init -y'")
 
     print('npm init')
 
@@ -248,6 +270,9 @@ def main() -> NoReturn:
         sys.exit(1)
 
     gitignore_langs: List[str] = []
+
+    git_init(sys.argv[1:])
+
     for lang in sys.argv[1:]:
         if lang == '--help' or lang == '-h':
             usage()
