@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
-import re
 import platform
+import re
 import subprocess
 import sys
 from datetime import datetime
@@ -42,14 +42,12 @@ def setup_c(lang: str) -> NoReturn:
 
 
 def git_init(args: List[str]) -> NoReturn:
-    if 'git' not in args:
-        return
+    if 'git' in args:
+        proc = subprocess.run(['git', 'init'])
+        if proc.returncode != 0:
+            raise Exception("Failed 'git init")
 
-    proc = subprocess.run(['git', 'init'])
-    if proc.returncode != 0:
-        raise Exception("Failed 'git init")
-
-    print('git init')
+        print('git init')
 
     if 'syohex' in args:
         commands = [
@@ -62,6 +60,9 @@ def git_init(args: List[str]) -> NoReturn:
                 raise Exception("Failed '{}'".format(' '.join(cmd)))
 
             print(' '.join(cmd))
+
+    if any([arg.startswith('gitattr') for arg in args]):
+        generate_gitattributes(args)
 
 
 def npm_init() -> NoReturn:
@@ -167,12 +168,27 @@ def generate_gitignore(langs: List[str]) -> NoReturn:
     print('Generate .gitignore')
 
 
-def generate_gitattributes() -> NoReturn:
+def generate_gitattributes(args: List[str]) -> NoReturn:
     if Path('.gitattributes').exists():
         return
 
+    lines = ['* text=auto']
+
+    if any([arg == 'go' or arg == 'golang' for arg in args]):
+        lines.append('')
+        lines.append('*.go text eol=lf')
+        lines.append('go.mod text eol=lf')
+        lines.append('go.sum text eol=lf')
+
+    if any([arg == 'c#' or arg == 'csharp' for arg in args]):
+        lines.append('')
+        lines.append('*.cs text eol=crlf')
+        lines.append('*.csproj text eol=crlf')
+
     with open('.gitattributes', 'w', encoding='utf-8') as f:
-        f.write("* text=auto\n")
+        content = "\n".join(lines)
+        f.write(content)
+        f.write("\n")
 
     print('Generate .gitattributes')
 
@@ -293,9 +309,6 @@ def main() -> NoReturn:
             setup_cmake()
         elif lang == 'mit':
             setup_mit_license()
-            continue
-        elif lang.startswith('gitattr'):
-            generate_gitattributes()
             continue
 
         gitignore_langs.append(lang)
