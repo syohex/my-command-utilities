@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import os
 import re
+import platform
 import subprocess
 import sys
 from datetime import datetime
@@ -134,7 +135,10 @@ def setup_golang() -> NoReturn:
     if Path('go.mod').exists():
         return
 
-    this_module = Path.cwd().relative_to(Path(os.getenv('GOPATH'), 'src'))
+    this_module = str(Path.cwd().relative_to(Path(os.getenv('GOPATH'), 'src')))
+    if platform.system() == 'Windows':
+        # the path in go.mod must be UNIX style
+        this_module = this_module.replace('\\', '/')
     version = go_version()
 
     go_mod = f'''module {this_module}
