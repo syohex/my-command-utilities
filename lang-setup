@@ -264,7 +264,15 @@ SOFTWARE.
     with open('LICENSE', 'w', encoding='utf-8') as f:
         f.write(license_text)
 
-    print('Generate LICENSE')
+    print('Generate LICENSE of MIT license')
+
+
+def setup_gpl_license() -> NoReturn:
+    url = 'https://www.gnu.org/licenses/gpl-3.0.txt'
+    if subprocess.run(['curl', '-L', '-o', 'COPYING', '--silent', url]).returncode != 0:
+        return
+
+    print('Generate COPYING of GPLv3 License')
 
 
 def usage():
@@ -309,6 +317,9 @@ def main() -> NoReturn:
             setup_cmake()
         elif lang == 'mit':
             setup_mit_license()
+            continue
+        elif lang.startswith('gpl'):
+            setup_gpl_license()
             continue
 
         gitignore_langs.append(lang)
