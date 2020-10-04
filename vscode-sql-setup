@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+import argparse
+import json
+import sys
+from pathlib import Path
+from typing import NoReturn
+
+
+def write_settings_json(config: dict) -> NoReturn:
+    Path(".vscode").mkdir(parents=True, exist_ok=True)
+
+    settings_json = Path('.vscode', 'settings.json')
+    if settings_json.exists():
+        with open(settings_json, 'r', encoding='utf-8') as f:
+            old_config = json.loads(f.read())
+            for key in ['sqltools.connections', 'sqltools.useNodeRuntime']:
+                if key in old_config:
+                    print(f"setting.json already has '{key}' key", file=sys.stderr)
+                    sys.exit(1)
+
+            for key, value in old_config:
+                config[key] = value
+
+    with open(settings_json, 'w', encoding='utf-8') as f:
+        new_config = json.dumps(config, indent=4)
+        f.write(new_config)
+        f.write("\n")
+
+        print("Write .vscode/settings.json")
+
+
+def to_sql_config(db: str, name: str, driver: str, limit: int) -> dict:
+    config = {
+        "sqltools.connections": [
+            {
+                "previewLimit": limit,
+                "driver": driver,
+                "database": f"${{workspaceFolder:{Path.cwd().name}}}/{db}",
+                "name": name,
+            }
+        ],
+        "sqltools.useNodeRuntime": True,
+    }
+
+    return config
+
+
+def generate_session_file(name: str) -> NoReturn:
+    session_file = Path(f'{name}.session.sql')
+    if session_file.exists():
+        # already exists
+        return
+
+    # create empty session file
+    with open(session_file, 'w') as _:
+        pass
+
+    print(f"Generate {str(session_file)}")
+
+
+def main() -> NoReturn:
+    parser = argparse.ArgumentParser(description="Generate SQL setups for VSCode")
+    parser.add_argument('--driver', type=str, default='SQLite', help='SQL Driver')
+    parser.add_argument('--limit', type=int, default=50, help='Preview limit')
+    parser.add_argument('args', nargs=argparse.REMAINDER)
+
+    args = parser.parse_args()
+    if len(args.args) < 2:
+        print("Usage: vscode-sql-setup [options] database name")
+        sys.exit(1)
+
+    db, name = args.args
+    config = to_sql_config(db, name, args.driver, args.limit)
+    write_settings_json(config)
+    generate_session_file(name)
+
+
+if __name__ == '__main__':
+    main()

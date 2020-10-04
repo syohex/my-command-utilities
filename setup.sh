@@ -14,6 +14,7 @@ commands=(
   git-pr
   weblio
   lang-setup
+  vscode-sql-setup
 )
 
 for file in "${commands[@]}"; do
