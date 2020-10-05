@@ -70,6 +70,10 @@ def main() -> NoReturn:
         sys.exit(1)
 
     db, name = args.args
+    if args.driver == 'SQLite' and not Path(db).exists:
+        print(f"Database '{db} is not found", file=sys.stderr)
+        sys.exit(1)
+
     config = to_sql_config(db, name, args.driver, args.limit)
     write_settings_json(config)
     generate_session_file(name)
