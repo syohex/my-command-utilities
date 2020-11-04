@@ -136,10 +136,14 @@ def setup_golang() -> NoReturn:
     if Path('go.mod').exists():
         return
 
-    this_module = str(Path.cwd().relative_to(Path(os.getenv('GOPATH'), 'src')))
-    if platform.system() == 'Windows':
-        # the path in go.mod must be UNIX style
-        this_module = this_module.replace('\\', '/')
+    try:
+        this_module = str(Path.cwd().relative_to(Path(os.getenv('GOPATH'), 'src')))
+        if platform.system() == 'Windows':
+            # the path in go.mod must be UNIX style
+            this_module = this_module.replace('\\', '/')
+    except ValueError:
+        raise Exception(f'{str(Path.cwd())} is not in GOPATH')
+
     version = go_version()
 
     go_mod = f'''module {this_module}
