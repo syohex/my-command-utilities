@@ -293,6 +293,10 @@ Build tool
 
 License
 - mit
+
+Git
+- git: git initialize
+- gitattr: generate .gitattributes
 ''')
 
 
