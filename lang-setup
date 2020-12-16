@@ -73,7 +73,7 @@ def npm_init() -> NoReturn:
     print('npm init')
 
 
-def generate_prettier():
+def generate_prettier() -> NoReturn:
     if Path('.prettierrc').exists():
         return
 
@@ -197,7 +197,7 @@ def generate_gitattributes(args: List[str]) -> NoReturn:
     print('Generate .gitattributes')
 
 
-def generate_readme_md():
+def generate_readme_md() -> NoReturn:
     if Path('README.md').exists():
         return
 
@@ -207,7 +207,7 @@ def generate_readme_md():
     print('Generate README.md')
 
 
-def setup_cmake():
+def setup_cmake() -> NoReturn:
     if Path('CMakeLists.txt').exists():
         return
 
@@ -279,7 +279,7 @@ def setup_gpl_license() -> NoReturn:
     print('Generate COPYING of GPLv3 License')
 
 
-def usage():
+def usage() -> NoReturn:
     print('''Usage: lang-setup features
 
 Supported features
