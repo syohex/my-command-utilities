@@ -161,8 +161,15 @@ def generate_gitignore(langs: List[str]) -> NoReturn:
     if Path('.gitignore').exists():
         return
 
+    keywords = []
+    for lang in langs:
+        if lang == 'cpp':
+            keywords.append('c++')
+        else:
+            keywords.append(lang)
+
     # I got error by using urllib.request. I use curl instead of it
-    url = 'https://www.gitignore.io/api/{}'.format('%2C'.join(langs))
+    url = 'https://www.gitignore.io/api/{}'.format('%2C'.join(keywords))
     command = ['curl', '-L', '-o', '.gitignore', '--silent', url]
     proc = subprocess.run(command)
     if proc.returncode != 0:
