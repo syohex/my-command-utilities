@@ -10,7 +10,7 @@ from typing import List, NoReturn
 
 
 def is_c_like_language(lang: str) -> bool:
-    return re.match(r'(?:c|c\+\+|objc)$', lang) is not None
+    return re.match(r'(?:c|c\+\+|cpp|objc)$', lang) is not None
 
 
 def is_js_like_language(lang: str) -> bool:
