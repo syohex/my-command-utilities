@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -e
+
+IDE_NAME=$1
+if [[ $IDE_NAME == "" ]]; then
+    echo "usage: ide ide_name"
+    exit 1
+fi
+
+"$IDE_NAME" . 1>/dev/null 2>/dev/null &
