@@ -7,4 +7,9 @@ if [[ $IDE_NAME == "" ]]; then
     exit 1
 fi
 
+if ! command -v "$IDE_NAME" 1>/dev/null 2>/dev/null; then
+    echo "IDE '$IDE_NAME' is not installed"
+    exit 1
+fi
+
 "$IDE_NAME" . 1>/dev/null 2>/dev/null &
