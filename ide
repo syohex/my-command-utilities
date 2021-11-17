@@ -1,15 +1,34 @@
 #!/usr/bin/env bash
 set -e
 
-IDE_NAME=$1
-if [[ $IDE_NAME == "" ]]; then
-    echo "usage: ide ide_name"
+function choose_ide() {
+    local ret=""
+    if [[ -e package.json ]]; then
+        ret="webstorm"
+    elif [[ -e go.mod ]] ; then
+        ret="goland"
+    elif [[ -e Makefile || -e CMakeLists.txt ]]; then
+        ret="clion"
+    elif ls *.sln *.csproj >/dev/null 2>/dev/null; then
+        ret="rider"
+    elif [[ -e build.gradle ]]; then
+        ret="idea"
+    elif [[ -e requirements.txt || -d venv || -e Pipfile || -e pyproject.toml ]]; then
+        ret="pycharm"
+    fi
+
+    echo "${ret}"
+}
+
+IDE=$(choose_ide)
+if [[ "$IDE" == "" ]]; then
+    echo "Which IDE do you want to use ?"
+    read IDE
+fi
+
+if ! command -v "$IDE" 1>/dev/null 2>/dev/null; then
+    echo "IDE '$IDE' is not installed"
     exit 1
 fi
 
-if ! command -v "$IDE_NAME" 1>/dev/null 2>/dev/null; then
-    echo "IDE '$IDE_NAME' is not installed"
-    exit 1
-fi
-
-"$IDE_NAME" . 1>/dev/null 2>/dev/null &
+"$IDE" "$@" 1>/dev/null 2>/dev/null &
