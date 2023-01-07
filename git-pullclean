@@ -1,28 +1,94 @@
-#!/usr/bin/env bash
-set -e
+#!/usr/bin/env python3
+import argparse
+import subprocess
+import sys
+from typing import List
 
-branch=$(git rev-parse --abbrev-ref HEAD)
-mapfile -t remotes < <(git remote)
+protected_branches = ['main', 'master', 'develop']
 
-remote=
-if [[ ${#remotes[@]} == 1 ]]; then
-  remote=${remotes[0]}
-else
-  for remote in "${remotes[@]}"
-  do
-    if [[ $remote == "origin" ]]; then
-      remote="origin"
-      break
-    fi
-  done
 
-  if [[ -z $remote ]]; then
-    echo "Could not found remote 'origin'"
-    exit 1
-  fi
-fi
+def merged_branches() -> List[str]:
+    proc = subprocess.run(['git', 'branch', '--merged'], stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        raise Exception("Failed 'git branch --merged'")
 
-git pull --rebase "$remote" "$branch"
-git fetch -p
-git delete-merged-branches
+    output = proc.stdout.decode('utf-8')
 
+    branches: List[str] = []
+    for line in output.splitlines():
+        if line.startswith('*'): # current branch
+            continue
+
+        branches.append(line.strip())
+
+    return branches
+
+
+def filter_branches(branches: List[str]) -> List[str]:
+    return [branch for branch in branches if branch not in protected_branches]
+
+
+def check_current_branch() -> bool :
+    proc = subprocess.run(['git', 'branch', '--show-current'], stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        raise Exception("Failed 'git branch --show-current'")
+
+    branch = proc.stdout.decode('utf-8').strip()
+    return branch in protected_branches
+
+
+def pull_and_cleanup() -> None:
+    proc = subprocess.run(['git', 'branch', '--show-current'], stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        raise Exception("Failed 'git branch --show-current'")
+
+    branch = proc.stdout.decode('utf-8').strip()
+    proc = subprocess.run(['git', 'pull', '--rebase', 'origin', branch])
+    if proc.returncode != 0:
+        raise Exception(f"Failed 'git pull --rebase origin {branch}'")
+
+    proc = subprocess.run(['git', 'fetch', '-p'])
+    if proc.returncode != 0:
+        raise Exception(f"Failed 'git fetch -p'")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description='Delete merged git branches')
+    parser.add_argument('-d', '--dry-run', action='store_true', default=False, dest='dry_run')
+    args = parser.parse_args()
+
+    if not check_current_branch():
+        print(f'This command is used only from {protected_branches} branches')
+        return
+
+    pull_and_cleanup()
+
+    branches = merged_branches()
+    if len(branches) == 0:
+        print('There is no merged branch')
+        return
+
+    deleting_branches = filter_branches(branches)
+    if len(branches) == 0:
+        print('There is no deletable branch')
+        return
+
+    if args.dry_run:
+        print("Dry run")
+
+    for branch in deleting_branches:
+        print(f'Delete {branch}')
+
+        if args.dry_run:
+            continue
+
+        proc = subprocess.run(['git', 'branch', '-d', branch], stdout=subprocess.DEVNULL)
+        if proc.returncode != 0:
+            print(f"Failed to delete 'f{branch}'", file=sys.stderr)
+            return
+
+    print(f'Delete {len(deleting_branches)} branches')
+
+
+if __name__ == '__main__':
+    main()
