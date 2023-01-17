@@ -28,7 +28,7 @@ def filter_branches(branches: List[str]) -> List[str]:
     return [branch for branch in branches if branch not in protected_branches]
 
 
-def check_current_branch() -> bool :
+def is_protected_branch() -> bool :
     proc = subprocess.run(['git', 'branch', '--show-current'], stdout=subprocess.PIPE)
     if proc.returncode != 0:
         raise Exception("Failed 'git branch --show-current'")
@@ -57,15 +57,15 @@ def main() -> None:
     parser.add_argument('-d', '--dry-run', action='store_true', default=False, dest='dry_run')
     args = parser.parse_args()
 
-    if not check_current_branch():
-        print(f'This command is used only from {protected_branches} branches')
-        return
-
     pull_and_cleanup()
 
     branches = merged_branches()
     if len(branches) == 0:
         print('There is no merged branch')
+        return
+
+    if not is_protected_branch():
+        print(f'Skip deleting merged branches')
         return
 
     deleting_branches = filter_branches(branches)
