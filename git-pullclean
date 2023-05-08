@@ -28,6 +28,15 @@ def filter_branches(branches: List[str]) -> List[str]:
     return [branch for branch in branches if branch not in protected_branches]
 
 
+def git_root() -> str:
+    proc = subprocess.run(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE)
+    if proc.returncode != 0:
+        raise Exception("Failed 'git rev-parse --show-toplevel'")
+
+    root = proc.stdout.decode('utf-8').strip()
+    return root
+
+
 def is_protected_branch() -> bool :
     proc = subprocess.run(['git', 'branch', '--show-current'], stdout=subprocess.PIPE)
     if proc.returncode != 0:
@@ -43,7 +52,7 @@ def pull_and_cleanup() -> None:
         raise Exception("Failed 'git branch --show-current'")
 
     branch = proc.stdout.decode('utf-8').strip()
-    proc = subprocess.run(['git', 'pull', '--rebase', 'origin', branch])
+    proc = subprocess.run(['git', 'pull', '--rebase', 'origin', branch], cwd=git_root())
     if proc.returncode != 0:
         raise Exception(f"Failed 'git pull --rebase origin {branch}'")
 
