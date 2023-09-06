@@ -6,15 +6,11 @@ mkdir -p ~/bin
 commands=(
   gencask
   git-ignore
-  test-emacs
   cdr_cleanup
-  git-delete-merged-branches
   git-blame-pr
   git-pullclean
-  git-pr
   weblio
   lang-setup
-  vscode-sql-setup
 )
 
 for file in "${commands[@]}"; do
