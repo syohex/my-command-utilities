@@ -18,6 +18,8 @@ def merged_branches() -> List[str]:
     for line in output.splitlines():
         if line.startswith('*'): # current branch
             continue
+        if line.startswith('+'): # don't delete worktree branch
+            continue
 
         branches.append(line.strip())
 
