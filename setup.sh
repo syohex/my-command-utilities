@@ -11,6 +11,8 @@ commands=(
   git-pullclean
   weblio
   lang-setup
+  update-go.sh
+  update-packages.sh
 )
 
 for file in "${commands[@]}"; do
