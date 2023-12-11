@@ -3,8 +3,11 @@ set -e
 
 VERSION=$1
 if [[ -z "$VERSION" ]]; then
-  echo "Usage: update-go.sh version"
-  exit 1
+  VERSION=$(curl -s 'https://go.dev/VERSION?m=text' | perl -wln -e 'm{^go(\d+\.\d+\.\d)$} and print $1')
+  if [[ -z "VERSION" ]]; then
+    echo "Usage: Cannot get latest version"
+    exit 1
+  fi
 fi
 
 TAR_FILE="go${VERSION}.linux-amd64.tar.gz"
