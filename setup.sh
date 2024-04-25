@@ -21,5 +21,8 @@ for file in "${commands[@]}"; do
 
   dest="${HOME}/bin/${file}"
   ln -fs "${PWD}/${file}" "$dest"
-  chmod +x "$dest"
+
+  if [[ "$file" != "update-node.sh" && "$file" != "update-go.sh" ]]; then
+    chmod +x "$dest"
+  fi
 done
