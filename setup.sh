@@ -12,6 +12,7 @@ commands=(
   weblio
   lang-setup
   update-go.sh
+  update-node.sh
   update-packages.sh
 )
 
