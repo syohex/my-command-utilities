@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
-VERSION=$1
-if [[ -z "$VERSION" ]]; then
+if ! command -v jq 2>&1; then
+  echo "Please install 'jq' to update node"
+  exit 1
+fi
+
+# get latest node version
+VERSION=
+if command -v npm 2>&1; then
+  VERSION=$(npm info --json node | jq '.version')
+else
   echo "Usage: update_node.sh version"
   exit 1
 fi
@@ -18,4 +26,5 @@ curl -s -LO "$URL"
 echo "extract ${FILE}"
 tar xf "$FILE"
 
+rm "$FILE"
 echo "Success to install node.js v${VERSION}"
