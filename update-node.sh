@@ -8,7 +8,7 @@ fi
 
 # get latest node version
 VERSION=
-if command -v npm 2>&1; then
+if command -v npm 1>/dev/null 2>/dev/null; then
   VERSION=$(npm info --json node | jq --raw-output '.versions | last')
 elif [[ -n "$1" ]]; then
   VERSION=$1
@@ -17,13 +17,14 @@ else
   exit 1
 fi
 
+cd ~/local
+
+echo "Clean old node.js"
+rm -rf node-v*
+
 FILE="node-v${VERSION}-linux-x64.tar.xz"
 URL="https://nodejs.org/dist/v${VERSION}/$FILE"
 curl -s -LO "$URL"
-
-cd ~/local
-echo "Clean old node.js"
-rm -rf node-v*
 
 echo "extract ${FILE}"
 tar xf "$FILE"
