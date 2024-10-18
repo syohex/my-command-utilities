@@ -78,7 +78,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if not is_repository_clean():
-        print("This repository is not clean. Please check")
+        print("This repository has some changes. Please check them before updating")
         return
 
     pull_and_cleanup()
