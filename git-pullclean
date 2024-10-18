@@ -4,21 +4,21 @@ import subprocess
 import sys
 from typing import List
 
-protected_branches = ['main', 'master', 'develop']
+protected_branches = ["main", "master", "develop"]
 
 
 def merged_branches() -> List[str]:
-    proc = subprocess.run(['git', 'branch', '--merged'], stdout=subprocess.PIPE)
+    proc = subprocess.run(["git", "branch", "--merged"], stdout=subprocess.PIPE)
     if proc.returncode != 0:
         raise Exception("Failed 'git branch --merged'")
 
-    output = proc.stdout.decode('utf-8')
+    output = proc.stdout.decode("utf-8")
 
     branches: List[str] = []
     for line in output.splitlines():
-        if line.startswith('*'): # current branch
+        if line.startswith("*"):  # current branch
             continue
-        if line.startswith('+'): # don't delete worktree branch
+        if line.startswith("+"):  # don't delete worktree branch
             continue
 
         branches.append(line.strip())
@@ -31,75 +31,90 @@ def filter_branches(branches: List[str]) -> List[str]:
 
 
 def git_root() -> str:
-    proc = subprocess.run(['git', 'rev-parse', '--show-toplevel'], stdout=subprocess.PIPE)
+    proc = subprocess.run(
+        ["git", "rev-parse", "--show-toplevel"], stdout=subprocess.PIPE
+    )
     if proc.returncode != 0:
         raise Exception("Failed 'git rev-parse --show-toplevel'")
 
-    root = proc.stdout.decode('utf-8').strip()
+    root = proc.stdout.decode("utf-8").strip()
     return root
 
 
-def is_protected_branch() -> bool :
-    proc = subprocess.run(['git', 'branch', '--show-current'], stdout=subprocess.PIPE)
+def is_protected_branch() -> bool:
+    proc = subprocess.run(["git", "branch", "--show-current"], stdout=subprocess.PIPE)
     if proc.returncode != 0:
         raise Exception("Failed 'git branch --show-current'")
 
-    branch = proc.stdout.decode('utf-8').strip()
+    branch = proc.stdout.decode("utf-8").strip()
     return branch in protected_branches
 
 
 def pull_and_cleanup() -> None:
-    proc = subprocess.run(['git', 'branch', '--show-current'], stdout=subprocess.PIPE)
+    proc = subprocess.run(["git", "branch", "--show-current"], stdout=subprocess.PIPE)
     if proc.returncode != 0:
         raise Exception("Failed 'git branch --show-current'")
 
-    branch = proc.stdout.decode('utf-8').strip()
-    proc = subprocess.run(['git', 'pull', '--rebase', 'origin', branch], cwd=git_root())
+    branch = proc.stdout.decode("utf-8").strip()
+    proc = subprocess.run(["git", "pull", "--rebase", "origin", branch], cwd=git_root())
     if proc.returncode != 0:
         raise Exception(f"Failed 'git pull --rebase origin {branch}'")
 
-    proc = subprocess.run(['git', 'fetch', '-p'])
+    proc = subprocess.run(["git", "fetch", "-p"])
     if proc.returncode != 0:
-        raise Exception(f"Failed 'git fetch -p'")
+        raise Exception("Failed 'git fetch -p'")
+
+
+def is_repository_clean() -> bool:
+    proc = subprocess.run(["git", "diff", "--quiet"])
+    return proc.returncode == 0
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description='Delete merged git branches')
-    parser.add_argument('-d', '--dry-run', action='store_true', default=False, dest='dry_run')
+    parser = argparse.ArgumentParser(description="Delete merged git branches")
+    parser.add_argument(
+        "-d", "--dry-run", action="store_true", default=False, dest="dry_run"
+    )
     args = parser.parse_args()
+
+    if not is_repository_clean():
+        print("This repository is not clean. Please check")
+        return
 
     pull_and_cleanup()
 
     branches = merged_branches()
     if len(branches) == 0:
-        print('There is no merged branch')
+        print("There is no merged branch")
         return
 
     if not is_protected_branch():
-        print(f'Skip deleting merged branches')
+        print("Skip deleting merged branches")
         return
 
     deleting_branches = filter_branches(branches)
     if len(branches) == 0:
-        print('There is no deletable branch')
+        print("There is no deletable branch")
         return
 
     if args.dry_run:
         print("Dry run")
 
     for branch in deleting_branches:
-        print(f'Delete {branch}')
+        print(f"Delete {branch}")
 
         if args.dry_run:
             continue
 
-        proc = subprocess.run(['git', 'branch', '-d', branch], stdout=subprocess.DEVNULL)
+        proc = subprocess.run(
+            ["git", "branch", "-d", branch], stdout=subprocess.DEVNULL
+        )
         if proc.returncode != 0:
             print(f"Failed to delete 'f{branch}'", file=sys.stderr)
             return
 
-    print(f'Delete {len(deleting_branches)} branches')
+    print(f"Delete {len(deleting_branches)} branches")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
