@@ -8,10 +8,10 @@ fi
 
 # get latest node version
 VERSION=
-if command -v npm 1>/dev/null 2>/dev/null; then
-  VERSION=$(npm info --json node | jq --raw-output '.versions | last')
-elif [[ -n "$1" ]]; then
+if [[ -n "$1" ]]; then
   VERSION=$1
+elif command -v npm 1>/dev/null 2>/dev/null; then
+  VERSION=$(npm info --json node | jq --raw-output '.versions | last')
 else
   echo "Usage: update_node.sh version"
   exit 1
