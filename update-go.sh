@@ -8,6 +8,13 @@ if [[ -z "$VERSION" ]]; then
     echo "Usage: Cannot get latest version"
     exit 1
   fi
+  if which go >/dev/null 2>&1; then
+    CURRENT_VERSION=$(go version | perl -wln -e 'm{go(\S+)} and print $1')
+    if [[ $CURRENT_VERSION == $VERSION ]]; then
+       echo "You install latest version: $VERSION"
+       exit 0
+    fi
+  fi
 fi
 
 TAR_FILE="go${VERSION}.linux-amd64.tar.gz"
