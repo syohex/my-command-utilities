@@ -4,12 +4,10 @@ set -e
 mkdir -p ~/bin
 
 commands=(
-  gencask
   git-ignore
   cdr_cleanup
   git-blame-pr
   git-pullclean
-  weblio
   lang-setup
   update-go.sh
   update-node.sh
