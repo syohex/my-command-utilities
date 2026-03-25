@@ -103,23 +103,19 @@ fn main() {
         for line in &removed {
             println!("{}", line);
         }
-        return;
-    }
-
-    if cli.stdin {
+    } else if cli.stdin {
         for line in &kept {
             println!("{}", line);
         }
-        return;
+    } else {
+        let mut output = kept.join("\n");
+        if !output.is_empty() {
+            output.push('\n');
+        }
+        fs::write(&file_path, output).expect("Failed to write ~/.chpwd-recent-dirs");
     }
 
-    let mut output = kept.join("\n");
-    if !output.is_empty() {
-        output.push('\n');
-    }
-    fs::write(&file_path, output).expect("Failed to write ~/.chpwd-recent-dirs");
-
-    eprintln!("Removed {} entries", removed.len());
+    println!("Removed {} entries", removed.len());
 }
 
 #[cfg(test)]
